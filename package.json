@@ -1,0 +1,17 @@
+{
+  "name": "gabriel-lacteos",
+  "version": "1.0.0",
+  "description": "Gabriel Lácteos - Sistema de Gestión de Inventario y Ventas en PHP y MySQL",
+  "scripts": {
+    "dev": "php -S localhost:8000",
+    "start": "php -S localhost:8000"
+  },
+  "keywords": [
+    "php",
+    "mysql",
+    "inventario",
+    "lacteos"
+  ],
+  "author": "Gabriel Lácteos",
+  "license": "MIT"
+}

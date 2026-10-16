@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ <Styles>
+  <Style ss:ID="Header">
+   <Font ss:Bold="1" ss:Color="#FFFFFF" ss:Size="11" ss:FontName="Calibri"/>
+   <Interior ss:Color="#1E3A8A" ss:Pattern="Solid"/>
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#000000"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#000000"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#000000"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#000000"/>
+   </Borders>
+  </Style>
+  <Style ss:ID="CellNormal">
+   <Font ss:Color="#1F2937" ss:Size="10" ss:FontName="Calibri"/>
+   <Alignment ss:Vertical="Top" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>
+   </Borders>
+  </Style>
+  <Style ss:ID="CellCenter">
+   <Font ss:Color="#1F2937" ss:Size="10" ss:FontName="Calibri"/>
+   <Alignment ss:Horizontal="Center" ss:Vertical="Top"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>
+   </Borders>
+  </Style>
+  <Style ss:ID="BadgeAlta">
+   <Font ss:Bold="1" ss:Color="#991B1B" ss:Size="10" ss:FontName="Calibri"/>
+   <Interior ss:Color="#FEE2E2" ss:Pattern="Solid"/>
+   <Alignment ss:Horizontal="Center" ss:Vertical="Top"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>
+   </Borders>
+  </Style>
+  <Style ss:ID="BadgeMedia">
+   <Font ss:Bold="1" ss:Color="#92400E" ss:Size="10" ss:FontName="Calibri"/>
+   <Interior ss:Color="#FEF3C7" ss:Pattern="Solid"/>
+   <Alignment ss:Horizontal="Center" ss:Vertical="Top"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>
+   </Borders>
+  </Style>
+ </Styles>
+ <Worksheet ss:Name="Historias de Usuario">
+  <Table>
+   <Column ss:Width="60"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="160"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="220"/>
+   <Column ss:Width="220"/>
+   <Column ss:Width="260"/>
+   <Column ss:Width="80"/>
+   <Column ss:Width="90"/>
+   <Row ss:Height="28">
+    <Cell ss:StyleID="Header"><Data ss:Type="String">ID</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Épica / Módulo</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Título</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Rol (Como)</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Funcionalidad (Quiero)</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Beneficio (Para)</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Criterios de Aceptación</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Prioridad</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Estado</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">HU-01</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Autenticación y Seguridad</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Inicio de Sesión</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Usuario (Admin / Cliente)</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Iniciar sesión con mi usuario y contraseña</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Acceder a las funciones del sistema según mi rol asignado</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">1. Validar que los campos no estén vacíos.
+2. Mensaje de error si credenciales son incorrectas.
+3. Si es Admin, redirigir al Dashboard.
+4. Si es Cliente, redirigir al Catálogo.
+5. Sesión protegida con PHP.</Data></Cell>
+    <Cell ss:StyleID="BadgeAlta"><Data ss:Type="String">Alta</Data></Cell>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">Completado</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">HU-02</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Autenticación y Seguridad</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Cierre de Sesión</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Usuario autenticado</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Cerrar mi sesión desde cualquier pantalla</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Proteger mi cuenta y evitar accesos no autorizados en equipos compartidos</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">1. Botón visible &#039;Cerrar Sesión&#039;.
+2. Destruir sesión y cookies de forma segura.
+3. Redirigir al login y bloquear navegación hacia atrás.</Data></Cell>
+    <Cell ss:StyleID="BadgeMedia"><Data ss:Type="String">Media</Data></Cell>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">Completado</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">HU-03</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Autenticación y Seguridad</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Control de Acceso por Roles</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Administrador</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Que las rutas administrativas estén restringidas solo para mi rol</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Evitar que clientes o invitados modifiquen inventarios, registren ventas o vean reportes</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">1. Redirigir invitados a login.php.
+2. Impedir que rol &#039;cliente&#039; entre a inventario, ventas o reportes (redirigir a catálogo).</Data></Cell>
+    <Cell ss:StyleID="BadgeAlta"><Data ss:Type="String">Alta</Data></Cell>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">Completado</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">HU-04</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Gestión de Productos</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Registrar Nuevo Producto Lácteo</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Administrador</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Registrar nuevos quesos y derivados con sus características completas</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Mantener actualizado el portafolio disponible para la venta</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">1. Registrar: código único, nombre, tipo, precios (compra/venta), stock inicial, stock mínimo y unidad.
+2. Validar que el código no exista previamente.
+3. Validar números positivos.</Data></Cell>
+    <Cell ss:StyleID="BadgeAlta"><Data ss:Type="String">Alta</Data></Cell>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">Completado</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">HU-05</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Gestión de Productos</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Listar y Buscar Productos</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Administrador</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Ver una tabla con todos los productos y buscarlos por nombre, código o tipo</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Localizar rápidamente productos y verificar precios y stock actual</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">1. Tabla con código, nombre, tipo, precio venta, stock y estado.
+2. Buscador en tiempo real por texto.
+3. Filtros por categoría y estado.</Data></Cell>
+    <Cell ss:StyleID="BadgeAlta"><Data ss:Type="String">Alta</Data></Cell>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">Completado</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">HU-06</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Gestión de Productos</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Modificar Información de Producto</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Administrador</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Editar los datos de un producto (precios, stock mínimo, descripción)</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Ajustar precios al mercado o corregir información errónea</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">1. Formulario precargado con datos actuales.
+2. Validar código único respecto a otros productos.
+3. Notificación de éxito al guardar.</Data></Cell>
+    <Cell ss:StyleID="BadgeMedia"><Data ss:Type="String">Media</Data></Cell>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">Completado</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">HU-07</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Gestión de Productos</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Desactivar / Eliminar Producto</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Administrador</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Desactivar o eliminar productos que no se comercialicen</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Evitar que salgan en ventas preservando la integridad histórica</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">1. Borrado lógico (activo/inactivo).
+2. Si tiene ventas asociadas, restringir borrado físico por integridad de BD.
+3. Confirmación antes de ejecutar.</Data></Cell>
+    <Cell ss:StyleID="BadgeMedia"><Data ss:Type="String">Media</Data></Cell>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">Completado</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">HU-08</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Control de Inventario</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Monitoreo y Alerta de Stock Mínimo</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Administrador</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Recibir alertas visuales cuando un producto esté por agotarse o en stock cero</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Reabastecer a tiempo con los proveedores de quesos</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">1. Badges y colores de advertencia (amarillo para stock &lt;= mínimo, rojo para agotado 0).
+2. Sección en el Dashboard de productos críticos.</Data></Cell>
+    <Cell ss:StyleID="BadgeAlta"><Data ss:Type="String">Alta</Data></Cell>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">Completado</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">HU-09</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Ventas y Facturación</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Registrar Nueva Venta (POS)</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Administrador / Cajero</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Registrar ventas agregando productos, cantidades y cliente</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Cobrar pedidos y descontar automáticamente del inventario</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">1. Generar número de venta correlativo (ej. VNT-0000X).
+2. Calcular subtotal y total automáticamente.
+3. Impedir vender más del stock existente.
+4. Descontar unidades vendidas en la base de datos de inmediato.</Data></Cell>
+    <Cell ss:StyleID="BadgeAlta"><Data ss:Type="String">Alta</Data></Cell>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">Completado</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">HU-10</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Historial de Ventas</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Consultar Historial de Ventas</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Administrador</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Consultar el listado de todas las ventas ordenadas por fecha</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Auditar las transacciones y verificar el volumen de ventas</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">1. Tabla con número de venta, fecha, cliente y total.
+2. Filtro por fecha o buscador por cliente/código.</Data></Cell>
+    <Cell ss:StyleID="BadgeMedia"><Data ss:Type="String">Media</Data></Cell>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">Completado</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">HU-11</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Historial de Ventas</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Ver Detalle de Venta</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Administrador</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Ver el desglose individual de los productos vendidos en una venta</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Comprobar precios unitarios, cantidades e ítems vendidos a un cliente</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">1. Modal o pantalla con detalle completo.
+2. Listado de ítems con producto, cantidad, precio y subtotal.</Data></Cell>
+    <Cell ss:StyleID="BadgeMedia"><Data ss:Type="String">Media</Data></Cell>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">Completado</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">HU-12</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Dashboard y Reportes</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Visualización de KPIs en Dashboard</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Administrador</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Visualizar métricas clave de ventas, productos y stock bajo</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Conocer de un vistazo la salud operativa y comercial del negocio</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">1. Tarjetas con total de productos, total de ventas, ingresos generados y alertas.
+2. Accesos directos a funciones principales.</Data></Cell>
+    <Cell ss:StyleID="BadgeMedia"><Data ss:Type="String">Media</Data></Cell>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">Completado</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">HU-13</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Dashboard y Reportes</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Generación de Reportes Financieros</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Administrador</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Consultar reportes de ventas por períodos y productos con más rotación</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Tomar decisiones de abastecimiento y rentabilidad de quesos</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">1. Filtrar por períodos de tiempo.
+2. Totales calculados de transacciones e ingresos generados.</Data></Cell>
+    <Cell ss:StyleID="BadgeMedia"><Data ss:Type="String">Media</Data></Cell>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">Completado</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">HU-14</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Catálogo de Clientes</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Consulta de Catálogo de Productos</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Cliente</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Explorar el catálogo interactivo de quesos con fotos, tipos y precios</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">Conocer la oferta disponible y precios antes de realizar pedidos</Data></Cell>
+    <Cell ss:StyleID="CellNormal"><Data ss:Type="String">1. Formato tarjetas (cards) atractivo y limpio.
+2. Solo mostrar productos activos y badges de disponibilidad.
+3. Modo solo lectura (sin costos de compra ni opciones de edición).</Data></Cell>
+    <Cell ss:StyleID="BadgeAlta"><Data ss:Type="String">Alta</Data></Cell>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">Completado</Data></Cell>
+   </Row>
+  </Table>
+ </Worksheet>
+</Workbook>
