@@ -6,8 +6,25 @@
  */
 require_once __DIR__ . '/config/helpers.php';
 
-// ── Sin sesión o cliente sin parámetros: mostrar página de inicio con hero ──
+// ── Permitir acciones del carrito sin autenticación (lista blanca) ──
 if (!is_authenticated()) {
+    $controlador = sanitize($_GET['c'] ?? '');
+    $accion = sanitize($_GET['a'] ?? '');
+    
+    // Lista blanca de acciones permitidas sin sesión
+    $accionesCarritoPermitidas = ['agregar', 'actualizar', 'quitar', 'vaciar', 'index'];
+    
+    if ($controlador === 'carrito' && in_array($accion, $accionesCarritoPermitidas, true)) {
+        require_once __DIR__ . '/controllers/CarritoController.php';
+        $instancia = new CarritoController();
+        
+        if (method_exists($instancia, $accion)) {
+            $instancia->$accion();
+            exit;
+        }
+    }
+    
+    // Si no es una acción de carrito permitida, mostrar página de inicio
     require_once __DIR__ . '/controllers/PublicoController.php';
     $ctrl = new PublicoController();
     $ctrl->inicio();

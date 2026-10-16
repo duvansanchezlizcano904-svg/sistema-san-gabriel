@@ -270,7 +270,14 @@ if (!empty($filtrosActivos)):
                         <?php elseif ($disponible): ?>
                             <form method="POST" action="index.php?c=carrito&a=agregar">
                                 <input type="hidden" name="producto_id" value="<?= $q['id'] ?>">
-                                <input type="hidden" name="redirect" value="index.php?c=catalogo">
+                                <?php
+                                // Construir URL de redirect conservando los filtros actuales
+                                $paramsActuales = $_GET;
+                                unset($paramsActuales['c'], $paramsActuales['a']); // Quitar controlador y acción
+                                $paramsActuales['c'] = 'catalogo';
+                                $urlRedirect = 'index.php?' . http_build_query($paramsActuales);
+                                ?>
+                                <input type="hidden" name="redirect" value="<?= htmlspecialchars($urlRedirect) ?>">
                                 
                                 <div class="d-flex align-items-center gap-2 mb-2">
                                     <label class="text-muted small mb-0 flex-shrink-0">Cantidad:</label>

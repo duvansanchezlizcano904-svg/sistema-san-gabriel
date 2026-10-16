@@ -50,12 +50,31 @@ class CarritoController {
     /* ─── Agregar producto al carrito ─── */
     public function agregar(): void {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            redirect('publico.php');
+            redirect('index.php');
         }
 
-        $productoId = (int)($_POST['producto_id'] ?? 0);
-        $cantidad   = max(1, (int)($_POST['cantidad'] ?? 1));
-        $redirect   = $_POST['redirect'] ?? 'publico.php';
+        $productoId = filter_var($_POST['producto_id'] ?? 0, FILTER_VALIDATE_INT);
+        $cantidad   = filter_var($_POST['cantidad'] ?? 1, FILTER_VALIDATE_INT);
+        $redirect   = trim($_POST['redirect'] ?? '');
+        
+        // Validar y sanitizar redirect: solo rutas internas
+        if (!empty($redirect)) {
+            // Rechazar URLs absolutas (http://, https://, //)
+            if (preg_match('#^(https?:)?//#i', $redirect)) {
+                $redirect = '';
+            }
+        }
+        
+        // Si no hay redirect válido, usar valor por defecto según autenticación
+        if (empty($redirect)) {
+            $redirect = is_authenticated() ? 'index.php?c=catalogo' : 'index.php';
+        }
+
+        // Validaciones básicas
+        if (!$productoId || !$cantidad || $cantidad < 1) {
+            set_flash('danger', 'Datos inválidos.');
+            redirect($redirect);
+        }
 
         $prod = $this->modeloProducto->obtenerPorId($productoId);
         if (!$prod || $prod['estado'] !== 'activo') {
@@ -68,17 +87,35 @@ class CarritoController {
         }
 
         $id = (string)$productoId;
+        $stockDisponible = (int)$prod['cantidad'];
+
         if (isset($_SESSION['carrito'][$id])) {
-            // El producto ya existe, incrementar cantidad
-            $nueva = $_SESSION['carrito'][$id]['cantidad'] + $cantidad;
-            $nueva = min($nueva, (int)$prod['cantidad']); // no superar stock
-            $_SESSION['carrito'][$id]['cantidad'] = $nueva;
-            $_SESSION['carrito'][$id]['subtotal']  = $nueva * (float)$prod['precio_venta'];
+            // El producto ya existe: SUMAR cantidad
+            $cantidadActual = $_SESSION['carrito'][$id]['cantidad'];
+            $cantidadNueva = $cantidadActual + $cantidad;
             
-            set_flash('success', "<strong>{$prod['nombre']}</strong> — cantidad actualizada en el carrito.");
+            // No superar stock disponible
+            if ($cantidadNueva > $stockDisponible) {
+                $cantidadNueva = $stockDisponible;
+                set_flash('warning', "<strong>{$prod['nombre']}</strong> — Solo hay {$stockDisponible} unidades disponibles. Se ajustó la cantidad en el carrito.");
+            } else {
+                set_flash('success', "<strong>{$prod['nombre']}</strong> — Cantidad actualizada en el carrito (ahora tienes {$cantidadNueva}).");
+            }
+            
+            $_SESSION['carrito'][$id]['cantidad'] = $cantidadNueva;
+            $_SESSION['carrito'][$id]['subtotal'] = $cantidadNueva * (float)$prod['precio_venta'];
+            $_SESSION['carrito'][$id]['stock_real'] = $stockDisponible;
+            
         } else {
-            // Producto nuevo, agregarlo al carrito
-            $cant = min($cantidad, (int)$prod['cantidad']);
+            // Producto nuevo: agregarlo al carrito
+            $cant = min($cantidad, $stockDisponible);
+            
+            if ($cant < $cantidad) {
+                set_flash('warning', "<strong>{$prod['nombre']}</strong> — Solo hay {$stockDisponible} unidades disponibles.");
+            } else {
+                set_flash('success', "<strong>{$prod['nombre']}</strong> agregado al carrito.");
+            }
+            
             $_SESSION['carrito'][$id] = [
                 'producto_id'       => $productoId,
                 'nombre'            => $prod['nombre'],
@@ -86,14 +123,12 @@ class CarritoController {
                 'unidad_medida'     => $prod['unidad_medida'],
                 'cantidad'          => $cant,
                 'subtotal'          => $cant * (float)$prod['precio_venta'],
-                'stock_real'        => (int)$prod['cantidad'],
+                'stock_real'        => $stockDisponible,
                 'categoria'         => $prod['categoria'] ?? '',
                 'tipo_leche'        => $prod['tipo_leche'] ?? '',
                 'peso_presentacion' => $prod['peso_presentacion'] ?? $prod['unidad_medida'],
                 'tipo'              => $prod['tipo'] ?? '',
             ];
-            
-            set_flash('success', "<strong>{$prod['nombre']}</strong> agregado al carrito.");
         }
         
         redirect($redirect);
@@ -101,24 +136,96 @@ class CarritoController {
 
     /* ─── Actualizar cantidad desde la vista del carrito ─── */
     public function actualizar(): void {
-        $redirect = $_POST['redirect'] ?? 'index.php?c=carrito';
-
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            redirect($redirect);
+            if (isset($_POST['ajax'])) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'mensaje' => 'Método no permitido']);
+                exit;
+            }
+            redirect('index.php?c=carrito');
         }
 
-        $productoId = (string)(int)($_POST['producto_id'] ?? 0);
-        $cantidad   = max(1, (int)($_POST['cantidad'] ?? 1));
-
-        if (isset($_SESSION['carrito'][$productoId])) {
-            $prod = $this->modeloProducto->obtenerPorId((int)$productoId);
-            $stockReal = $prod ? (int)$prod['cantidad'] : 999;
-            $cant = min($cantidad, $stockReal);
-            $_SESSION['carrito'][$productoId]['cantidad'] = $cant;
-            $_SESSION['carrito'][$productoId]['subtotal']  =
-                $cant * $_SESSION['carrito'][$productoId]['precio_unitario'];
+        $esAjax     = isset($_POST['ajax']) && $_POST['ajax'] === '1';
+        $productoId = filter_var($_POST['producto_id'] ?? 0, FILTER_VALIDATE_INT);
+        $cantidad   = filter_var($_POST['cantidad'] ?? 1, FILTER_VALIDATE_INT);
+        
+        // Validar datos sanitizados
+        if (!$productoId || !$cantidad) {
+            if ($esAjax) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'mensaje' => 'Datos inválidos']);
+                exit;
+            }
+            set_flash('danger', 'Datos inválidos.');
+            redirect('index.php?c=carrito');
         }
 
+        $productoIdStr = (string)$productoId;
+
+        if (!isset($_SESSION['carrito'][$productoIdStr])) {
+            if ($esAjax) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'mensaje' => 'Producto no encontrado en el carrito']);
+                exit;
+            }
+            set_flash('warning', 'El producto no está en tu carrito.');
+            redirect('index.php?c=carrito');
+        }
+
+        // Obtener stock actual desde BD
+        $prod = $this->modeloProducto->obtenerPorId($productoId);
+        if (!$prod || $prod['estado'] !== 'activo') {
+            if ($esAjax) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'mensaje' => 'Producto no disponible']);
+                exit;
+            }
+            set_flash('danger', 'El producto ya no está disponible.');
+            unset($_SESSION['carrito'][$productoIdStr]);
+            redirect('index.php?c=carrito');
+        }
+
+        $stockReal = (int)$prod['cantidad'];
+
+        // Validar cantidad mínima y máxima
+        if ($cantidad < 1) {
+            $cantidad = 1;
+        }
+        if ($cantidad > $stockReal) {
+            if ($esAjax) {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => false, 
+                    'mensaje' => "Solo hay {$stockReal} unidades disponibles en stock"
+                ]);
+                exit;
+            }
+            set_flash('warning', "Solo hay {$stockReal} unidades disponibles.");
+            $cantidad = $stockReal;
+        }
+
+        // Actualizar cantidad y subtotal
+        $_SESSION['carrito'][$productoIdStr]['cantidad']  = $cantidad;
+        $_SESSION['carrito'][$productoIdStr]['subtotal']  = $cantidad * $_SESSION['carrito'][$productoIdStr]['precio_unitario'];
+        $_SESSION['carrito'][$productoIdStr]['stock_real'] = $stockReal;
+
+        // Calcular total general
+        $total = array_sum(array_column($_SESSION['carrito'], 'subtotal'));
+
+        if ($esAjax) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success'  => true,
+                'cantidad' => $cantidad,
+                'subtotal' => $_SESSION['carrito'][$productoIdStr]['subtotal'],
+                'total'    => $total,
+                'carrito'  => $_SESSION['carrito']
+            ]);
+            exit;
+        }
+
+        set_flash('success', 'Cantidad actualizada.');
+        $redirect = $_POST['redirect'] ?? 'index.php?c=carrito';
         redirect($redirect);
     }
 

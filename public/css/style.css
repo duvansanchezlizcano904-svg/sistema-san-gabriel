@@ -380,3 +380,235 @@ body {
     }
     .sidebar-overlay.show { display: block; }
 }
+
+/* ==============================================================
+   Catálogo y Carrito — Estilos Avanzados
+   ============================================================== */
+
+/* ── Controles de cantidad en el carrito ── */
+.carrito-qty-control {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    justify-content: center;
+}
+
+.carrito-qty-btn {
+    width: 32px; height: 32px;
+    background: #f8fafc;
+    border: 1px solid var(--sg-border);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--sg-text);
+    font-size: 0.9rem;
+    padding: 0;
+}
+
+.carrito-qty-btn:hover:not(:disabled) {
+    background: var(--sg-primary);
+    border-color: var(--sg-primary);
+    color: #fff;
+}
+
+.carrito-qty-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.carrito-qty-input {
+    border: 1px solid var(--sg-border);
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 600;
+    padding: 0.4rem;
+    background: #fff;
+    color: var(--sg-text);
+}
+
+/* ── Tabla del carrito responsiva (móvil = tarjetas) ── */
+@media (max-width: 767.98px) {
+    .table-lacteo thead {
+        display: none;
+    }
+    
+    .table-lacteo,
+    .table-lacteo tbody,
+    .table-lacteo tr,
+    .table-lacteo td {
+        display: block;
+        width: 100%;
+    }
+    
+    .table-lacteo tr {
+        margin-bottom: 1.5rem;
+        border: 1px solid var(--sg-border);
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+    }
+    
+    .table-lacteo td {
+        border: none;
+        border-bottom: 1px solid #f1f5f9;
+        padding: 1rem 1.25rem;
+        position: relative;
+    }
+    
+    .table-lacteo td:last-child {
+        border-bottom: none;
+    }
+    
+    .table-lacteo td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.72rem;
+        color: var(--sg-text-muted);
+        display: block;
+        margin-bottom: 0.35rem;
+        letter-spacing: 0.05em;
+    }
+    
+    .table-lacteo tfoot {
+        display: block;
+    }
+    
+    .table-lacteo tfoot tr {
+        border: none;
+        background: #f8fafc;
+        padding: 1.25rem;
+    }
+    
+    .table-lacteo tfoot td {
+        border: none;
+        padding: 0;
+    }
+}
+
+/* ── Tags de intensidad con colores ── */
+.badge.bg-success-subtle { background-color: #d1fae5 !important; color: #059669 !important; }
+.badge.bg-warning-subtle { background-color: #fef3c7 !important; color: #d97706 !important; }
+.badge.bg-orange-subtle  { background-color: #fed7aa !important; color: #ea580c !important; }
+.badge.bg-danger-subtle  { background-color: #fee2e2 !important; color: #dc2626 !important; }
+
+/* ── Filtros avanzados responsivos ── */
+@media (max-width: 479.98px) {
+    /* Móvil muy pequeño: cada filtro en su propia fila */
+    .card-lacteo .row.g-3 > div[class*="col-"] {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+@media (min-width: 480px) and (max-width: 767.98px) {
+    /* Móvil: 2 columnas */
+    .card-lacteo .row.g-3 > div.col-12.col-sm-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023.98px) {
+    /* Tablet: 3 columnas para filtros */
+    .card-lacteo .row.g-3 > div.col-md-3,
+    .card-lacteo .row.g-3 > div.col-md-2 {
+        flex: 0 0 33.333%;
+        max-width: 33.333%;
+    }
+}
+
+/* ── Badges de filtros activos ── */
+.badge .text-decoration-none:hover {
+    text-decoration: underline !important;
+}
+
+/* Ajustar espaciado del botón × en badges */
+.badge a[href] {
+    margin-left: 0.25rem;
+    font-weight: 700;
+}
+
+/* ── Grid de productos responsivo ── */
+@media (max-width: 479.98px) {
+    /* Móvil: 1 columna */
+    .row.g-4 > .col-12.col-sm-6.col-lg-4.col-xl-3 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+@media (min-width: 480px) and (max-width: 767.98px) {
+    /* Móvil grande: 2 columnas */
+    .row.g-4 > .col-12.col-sm-6.col-lg-4.col-xl-3 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023.98px) {
+    /* Tablet: 3 columnas */
+    .row.g-4 > .col-12.col-sm-6.col-lg-4.col-xl-3 {
+        flex: 0 0 33.333%;
+        max-width: 33.333%;
+    }
+}
+
+@media (min-width: 1024px) {
+    /* Desktop: 4 columnas (ya definido con col-xl-3) */
+}
+
+/* ── Tarjetas de producto mejoradas ── */
+.card-lacteo .badge {
+    font-size: 0.72rem;
+    padding: 0.25rem 0.6rem;
+}
+
+.card-lacteo .badge i {
+    font-size: 0.8rem;
+}
+
+/* Modal de características (si se implementa) */
+.modal-caracteristicas .list-group-item {
+    border: none;
+    border-bottom: 1px solid var(--sg-border);
+    padding: 0.85rem 0;
+}
+
+.modal-caracteristicas .list-group-item:last-child {
+    border-bottom: none;
+}
+
+/* ── Ajustes finales de responsive ── */
+@media (max-width: 767.98px) {
+    /* Reducir padding en móvil */
+    .content-body {
+        padding: 1.25rem;
+    }
+    
+    .card-lacteo {
+        padding: 1rem !important;
+    }
+    
+    /* Hacer botones más grandes en móvil */
+    .btn-sm {
+        font-size: 0.9rem;
+        padding: 0.5rem 0.85rem;
+    }
+}
+
+/* ── Animaciones suaves ── */
+.card-lacteo,
+.badge,
+.btn {
+    transition: all 0.2s ease;
+}
+
+.carrito-qty-input:focus {
+    border-color: var(--sg-primary);
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(29, 78, 216, 0.25);
+}

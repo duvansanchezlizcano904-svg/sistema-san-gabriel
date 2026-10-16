@@ -220,4 +220,133 @@ require_once __DIR__ . '/../layouts/header.php';
 .carrito-qty-input { width: 70px; }
 </style>
 
+<script>
+/**
+ * Actualizar cantidad del carrito con AJAX
+ * Recalcula subtotales y totales sin recargar la página
+ */
+function cambiarCantidad(btnElement, cambio, stockMax) {
+    const form = btnElement.closest('.carrito-qty-form');
+    const input = form.querySelector('.carrito-qty-input');
+    const productoId = form.querySelector('input[name="producto_id"]').value;
+    
+    let cantidadActual = parseInt(input.value);
+    let cantidadNueva = cantidadActual + cambio;
+    
+    // Validar límites
+    if (cantidadNueva < 1) cantidadNueva = 1;
+    if (cantidadNueva > stockMax) cantidadNueva = stockMax;
+    
+    // No hacer nada si no cambió
+    if (cantidadNueva === cantidadActual) return;
+    
+    // Actualizar input temporalmente
+    input.value = cantidadNueva;
+    
+    // Deshabilitar botones mientras se procesa
+    const btnMinus = form.querySelector('.carrito-qty-btn-minus');
+    const btnPlus = form.querySelector('.carrito-qty-btn-plus');
+    btnMinus.disabled = true;
+    btnPlus.disabled = true;
+    
+    // Enviar petición AJAX
+    const formData = new FormData();
+    formData.append('producto_id', productoId);
+    formData.append('cantidad', cantidadNueva);
+    formData.append('ajax', '1');
+    
+    fetch('index.php?c=carrito&a=actualizar', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Actualizar subtotal de la fila
+            const row = form.closest('tr');
+            const subtotalCell = row.querySelector('td:nth-child(4)');
+            if (subtotalCell && data.subtotal) {
+                subtotalCell.innerHTML = `<span class="fw-bold text-primary fs-5">${formatearMoneda(data.subtotal)}</span>`;
+            }
+            
+            // Actualizar total general
+            if (data.total) {
+                const totalCell = document.querySelector('tfoot .text-success');
+                if (totalCell) {
+                    totalCell.textContent = formatearMoneda(data.total);
+                }
+                
+                // Actualizar también el total del resumen lateral
+                const resumenTotal = document.querySelector('.card-lacteo .fs-3.fw-bold.text-primary');
+                if (resumenTotal) {
+                    resumenTotal.textContent = formatearMoneda(data.total);
+                }
+            }
+            
+            // Actualizar el desglose del resumen
+            actualizarResumen(data.carrito);
+            
+            // Habilitar/deshabilitar botones según nuevos límites
+            btnMinus.disabled = (cantidadNueva <= 1);
+            btnPlus.disabled = (cantidadNueva >= stockMax);
+            
+        } else {
+            // Error: revertir cambio
+            input.value = cantidadActual;
+            alert(data.mensaje || 'Error al actualizar cantidad');
+            btnMinus.disabled = (cantidadActual <= 1);
+            btnPlus.disabled = (cantidadActual >= stockMax);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        input.value = cantidadActual;
+        alert('Error de conexión. Por favor intenta de nuevo.');
+        btnMinus.disabled = (cantidadActual <= 1);
+        btnPlus.disabled = (cantidadActual >= stockMax);
+    });
+}
+
+/**
+ * Actualizar el desglose del resumen lateral
+ */
+function actualizarResumen(carrito) {
+    const resumenContainer = document.querySelector('.d-flex.flex-column.gap-2.mb-4');
+    if (!resumenContainer || !carrito) return;
+    
+    let html = '';
+    for (const id in carrito) {
+        const item = carrito[id];
+        html += `
+            <div class="d-flex justify-content-between small">
+                <span class="text-muted">
+                    ${escapeHtml(item.nombre)}
+                    <span class="badge bg-light text-dark border ms-1">×${item.cantidad}</span>
+                </span>
+                <span class="fw-semibold">${formatearMoneda(item.subtotal)}</span>
+            </div>
+        `;
+    }
+    resumenContainer.innerHTML = html;
+}
+
+/**
+ * Formatear moneda para JavaScript
+ */
+function formatearMoneda(valor) {
+    const num = parseFloat(valor);
+    if (isNaN(num)) return '$0';
+    return '$' + num.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+/**
+ * Escapar HTML para prevenir XSS
+ */
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+</script>
+
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

@@ -60,7 +60,7 @@ INSERT INTO `productos` (`codigo`, `nombre`, `tipo`, `categoria`, `descripcion`,
 ('QAR-002', 'Queso Ahumado Artesanal', 'Queso Ahumado', 'Quesos Artesanales', 'Queso semicurado ahumado con leña de roble.', 14000.00, 20500.00, 11, 4, 'Kilogramo', 'Vaca', 'medio', '2-3 meses', '1 kg', 'Región Andina', 'activo'),
 ('QAR-003', 'Queso Trenzado Llanero', 'Queso Hilado', 'Quesos Artesanales', 'Queso fresco hilado trenzado manualmente, típico llanero.', 8500.00, 13000.00, 20, 6, 'Trenza 400g', 'Vaca', 'medio', '1 semana', '400 g', 'Llanos Orientales', 'activo'),
 ('QAR-004', 'Queso con Trufa Negra', 'Queso Premium', 'Quesos Artesanales', 'Queso semicurado con láminas de trufa negra, producto gourmet.', 28000.00, 42000.00, 4, 2, 'Kilogramo', 'Vaca', 'muy fuerte', '3-6 meses', '300 g', 'Nacional Premium', 'activo'),
-('QAR-005', 'Queso Burrata Fresca', 'Queso Italiano', 'Quesos Artesanales', 'Queso italiano con corazón cremoso de stracciatella.', 18000.00, 27000.00, 8, 3, 'Unidad 250g', 'Vaca', 'suave', 'Sin maduración', '250 g', 'Valle del Cauca', 'activo');
+('QAR-005', 'Queso Burrata Fresca', 'Queso Italiano', 'Quesos Cremosos', 'Queso italiano con corazón cremoso de stracciatella.', 18000.00, 27000.00, 8, 3, 'Unidad 250g', 'Vaca', 'suave', 'Sin maduración', '250 g', 'Valle del Cauca', 'activo');
 
 -- Mensaje de confirmación
 SELECT COUNT(*) as 'Nuevos productos insertados' FROM productos WHERE codigo LIKE 'Q%';

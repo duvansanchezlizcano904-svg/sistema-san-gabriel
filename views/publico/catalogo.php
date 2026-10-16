@@ -372,20 +372,22 @@
                             </button>
 
                             <?php if ($disponible): ?>
-                                <?php if ($estaAutenticado && !$esAdmin): ?>
-                                    <form method="POST" action="index.php?c=carrito&a=agregar">
-                                        <input type="hidden" name="producto_id" value="<?= $q['id'] ?>">
-                                        <input type="hidden" name="cantidad" value="1">
-                                        <input type="hidden" name="redirect" value="publico.php#productos">
-                                        <button type="submit" class="pub-btn-agregar">
-                                            <i class="bi bi-cart-plus"></i>
-                                        </button>
-                                    </form>
-                                <?php elseif (!$estaAutenticado): ?>
-                                    <a href="login.php" class="pub-btn-agregar pub-btn-agregar--lock" title="Inicia sesión para comprar">
-                                        <i class="bi bi-lock"></i>
-                                    </a>
-                                <?php endif; ?>
+                                <?php
+                                // Construir URL de redirect conservando filtros
+                                $filtrosPermitidos = ['q' => '', 'tipo' => '', 'categoria' => '', 'tipo_leche' => '', 'intensidad' => ''];
+                                $filtrosActivos = array_intersect_key($_GET, $filtrosPermitidos);
+                                $queryString = !empty($filtrosActivos) ? '?' . http_build_query($filtrosActivos) : '';
+                                $urlRedirect = 'publico.php' . $queryString . '#productos';
+                                ?>
+                                
+                                <form method="POST" action="index.php?c=carrito&a=agregar">
+                                    <input type="hidden" name="producto_id" value="<?= $q['id'] ?>">
+                                    <input type="hidden" name="cantidad" value="1">
+                                    <input type="hidden" name="redirect" value="<?= htmlspecialchars($urlRedirect) ?>">
+                                    <button type="submit" class="pub-btn-agregar" title="<?= $estaAutenticado ? 'Agregar al carrito' : 'Agregar al carrito (sin necesidad de iniciar sesión)' ?>">
+                                        <i class="bi bi-cart-plus"></i>
+                                    </button>
+                                </form>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -623,24 +625,27 @@ function abrirModal(p) {
     const accionEl = document.getElementById('pubModalAccion');
     const esAuth   = <?= $estaAutenticado ? 'true' : 'false' ?>;
     const esAdmin  = <?= $esAdmin ? 'true' : 'false' ?>;
+    
+    // Construir redirect con filtros actuales
+    const urlParams = new URLSearchParams(window.location.search);
+    const filtrosPermitidos = ['q', 'tipo', 'categoria', 'tipo_leche', 'intensidad'];
+    const queryString = Array.from(urlParams.entries())
+        .filter(([key]) => filtrosPermitidos.includes(key))
+        .map(([key, val]) => `${key}=${encodeURIComponent(val)}`)
+        .join('&');
+    const redirectUrl = 'publico.php' + (queryString ? '?' + queryString : '') + '#productos';
 
     if (p.disponible && !esAdmin) {
-        if (esAuth) {
-            accionEl.innerHTML = `
-                <form method="POST" action="index.php?c=carrito&a=agregar">
-                    <input type="hidden" name="producto_id" value="${p.id}">
-                    <input type="hidden" name="cantidad" value="1">
-                    <input type="hidden" name="redirect" value="publico.php#productos">
-                    <button type="submit" class="pub-modal-btn-agregar">
-                        <i class="bi bi-cart-plus me-2"></i>Agregar al carrito
-                    </button>
-                </form>`;
-        } else {
-            accionEl.innerHTML = `
-                <a href="login.php" class="pub-modal-btn-login">
-                    <i class="bi bi-person me-2"></i>Inicia sesión para comprar
-                </a>`;
-        }
+        // Ahora permitimos agregar tanto autenticados como visitantes
+        accionEl.innerHTML = `
+            <form method="POST" action="index.php?c=carrito&a=agregar">
+                <input type="hidden" name="producto_id" value="${p.id}">
+                <input type="hidden" name="cantidad" value="1">
+                <input type="hidden" name="redirect" value="${redirectUrl}">
+                <button type="submit" class="pub-modal-btn-agregar">
+                    <i class="bi bi-cart-plus me-2"></i>Agregar al carrito
+                </button>
+            </form>`;
     } else if (!p.disponible) {
         accionEl.innerHTML = `<span class="pub-modal-sin-stock">Sin stock disponible</span>`;
     } else {
