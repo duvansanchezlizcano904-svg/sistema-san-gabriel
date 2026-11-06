@@ -6,13 +6,21 @@ CREATE DATABASE IF NOT EXISTS `gabriel_lacteos` DEFAULT CHARACTER SET utf8mb4 CO
 USE `gabriel_lacteos`;
 
 -- --------------------------------------------------------
--- 1. TABLA: usuarios
+-- Limpieza inicial segura para reimportación
 -- --------------------------------------------------------
+SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS `detalle_pedidos`;
+DROP TABLE IF EXISTS `pedidos`;
+DROP TABLE IF EXISTS `proveedores`;
 DROP TABLE IF EXISTS `detalle_ventas`;
 DROP TABLE IF EXISTS `ventas`;
 DROP TABLE IF EXISTS `productos`;
 DROP TABLE IF EXISTS `usuarios`;
+SET FOREIGN_KEY_CHECKS = 1;
 
+-- --------------------------------------------------------
+-- 1. TABLA: usuarios
+-- --------------------------------------------------------
 CREATE TABLE `usuarios` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `nombre` VARCHAR(100) NOT NULL,
@@ -21,6 +29,8 @@ CREATE TABLE `usuarios` (
   `email` VARCHAR(100) NULL,
   `telefono` VARCHAR(30) NULL,
   `rol` ENUM('administrador', 'cliente') NOT NULL DEFAULT 'cliente',
+  `token_recuperacion` VARCHAR(64) NULL DEFAULT NULL,
+  `token_expiracion` DATETIME NULL DEFAULT NULL,
   `creado_en` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -43,7 +53,15 @@ CREATE TABLE `productos` (
   `codigo` VARCHAR(30) UNIQUE NOT NULL,
   `nombre` VARCHAR(120) NOT NULL,
   `tipo` VARCHAR(60) NOT NULL,
+  `categoria` VARCHAR(60) NULL DEFAULT NULL COMMENT 'Categoría principal del queso',
+  `tipo_leche` VARCHAR(60) NULL DEFAULT NULL COMMENT 'Tipo de leche: Vaca, Cabra, Oveja, Mezcla',
+  `intensidad_sabor` ENUM('suave', 'medio', 'fuerte', 'muy fuerte') NULL DEFAULT 'medio' COMMENT 'Intensidad del sabor',
+  `tiempo_maduracion` VARCHAR(60) NULL DEFAULT NULL COMMENT 'Tiempo de maduración del queso',
+  `peso_presentacion` VARCHAR(60) NULL DEFAULT NULL COMMENT 'Peso o presentación específica',
+  `origen` VARCHAR(100) NULL DEFAULT NULL COMMENT 'Región o lugar de origen',
   `descripcion` TEXT NULL,
+  `imagen_url` VARCHAR(255) NULL DEFAULT NULL COMMENT 'URL de imagen del producto',
+  `imagen` VARCHAR(255) NULL DEFAULT NULL,
   `precio_compra` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
   `precio_venta` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
   `cantidad` INT NOT NULL DEFAULT 0,
@@ -52,7 +70,11 @@ CREATE TABLE `productos` (
   `estado` ENUM('activo', 'inactivo') NOT NULL DEFAULT 'activo',
   `creado_en` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   INDEX `idx_tipo` (`tipo`),
-  INDEX `idx_estado` (`estado`)
+  INDEX `idx_categoria` (`categoria`),
+  INDEX `idx_tipo_leche` (`tipo_leche`),
+  INDEX `idx_intensidad_sabor` (`intensidad_sabor`),
+  INDEX `idx_estado` (`estado`),
+  INDEX `idx_productos_imagen` (`imagen`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Inserción de productos lácteos iniciales de prueba
@@ -67,6 +89,97 @@ INSERT INTO `productos` (`codigo`, `nombre`, `tipo`, `descripcion`, `precio_comp
 ('LAC-008', 'Queso Pera Artesanal', 'Queso Hilado', 'Queso fresco ácido hilado con forma de pera, textura semidura.', 6000.00, 9000.00, 2, 4, 'Bloque', 'activo'),
 ('LAC-009', 'Queso Ricotta / Requesón', 'Queso Fresco', 'Queso blanco granulado obtenido del suero lácteo, suave y ligero.', 5000.00, 8000.00, 20, 6, 'Kilogramo', 'activo'),
 ('LAC-010', 'Queso Provolone Ahumado', 'Queso Maduro', 'Queso madurado de pasta hilada con aroma y notas ahumadas naturales.', 5000.00, 8000.00, 10, 6, 'Kilogramo', 'activo');
+
+-- Actualizar productos iniciales con datos de categorización
+UPDATE `productos` SET 
+    categoria = 'Quesos Frescos',
+    tipo_leche = 'Vaca',
+    intensidad_sabor = 'suave',
+    tiempo_maduracion = 'Sin maduración',
+    peso_presentacion = '1 kg',
+    origen = 'Región Andina'
+WHERE codigo = 'LAC-001';
+
+UPDATE `productos` SET 
+    categoria = 'Quesos Madurados',
+    tipo_leche = 'Vaca',
+    intensidad_sabor = 'fuerte',
+    tiempo_maduracion = '2-3 meses',
+    peso_presentacion = '1 kg',
+    origen = 'Costa Atlántica'
+WHERE codigo = 'LAC-002';
+
+UPDATE `productos` SET 
+    categoria = 'Quesos Frescos',
+    tipo_leche = 'Vaca',
+    intensidad_sabor = 'suave',
+    tiempo_maduracion = 'Sin maduración',
+    peso_presentacion = '1 kg',
+    origen = 'Región Andina'
+WHERE codigo = 'LAC-003';
+
+UPDATE `productos` SET 
+    categoria = 'Quesos Cremosos',
+    tipo_leche = 'Vaca',
+    intensidad_sabor = 'medio',
+    tiempo_maduracion = '1-2 semanas',
+    peso_presentacion = '1 kg',
+    origen = 'Valle del Cauca'
+WHERE codigo = 'LAC-004';
+
+UPDATE `productos` SET 
+    categoria = 'Quesos Cremosos',
+    tipo_leche = 'Vaca',
+    intensidad_sabor = 'suave',
+    tiempo_maduracion = '1-2 semanas',
+    peso_presentacion = '1 kg',
+    origen = 'Región Andina'
+WHERE codigo = 'LAC-005';
+
+UPDATE `productos` SET 
+    categoria = 'Quesos Artesanales',
+    tipo_leche = 'Vaca',
+    intensidad_sabor = 'medio',
+    tiempo_maduracion = '1 semana',
+    peso_presentacion = '500 g',
+    origen = 'Región Tolimense'
+WHERE codigo = 'LAC-006';
+
+UPDATE `productos` SET 
+    categoria = 'Quesos Artesanales',
+    tipo_leche = 'Vaca',
+    intensidad_sabor = 'medio',
+    tiempo_maduracion = '1-2 semanas',
+    peso_presentacion = '500 g',
+    origen = 'Llanos Orientales'
+WHERE codigo = 'LAC-007';
+
+UPDATE `productos` SET 
+    categoria = 'Quesos Artesanales',
+    tipo_leche = 'Vaca',
+    intensidad_sabor = 'medio',
+    tiempo_maduracion = '1 semana',
+    peso_presentacion = '400-500 g',
+    origen = 'Región Andina'
+WHERE codigo = 'LAC-008';
+
+UPDATE `productos` SET 
+    categoria = 'Quesos Frescos',
+    tipo_leche = 'Vaca',
+    intensidad_sabor = 'suave',
+    tiempo_maduracion = 'Sin maduración',
+    peso_presentacion = '1 kg',
+    origen = 'Región Andina'
+WHERE codigo = 'LAC-009';
+
+UPDATE `productos` SET 
+    categoria = 'Quesos Madurados',
+    tipo_leche = 'Vaca',
+    intensidad_sabor = 'fuerte',
+    tiempo_maduracion = '3-6 meses',
+    peso_presentacion = '1 kg',
+    origen = 'Italia / Nacional'
+WHERE codigo = 'LAC-010';
 
 -- --------------------------------------------------------
 -- 3. TABLA: ventas

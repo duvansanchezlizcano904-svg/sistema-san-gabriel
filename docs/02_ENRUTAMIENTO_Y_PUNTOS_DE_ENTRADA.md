@@ -61,9 +61,51 @@ Punto de acceso rápido para cerrar la sesión activa del usuario desde enlaces 
 ## 4. `publico.php`
 
 ### Propósito
-Punto de entrada directo para visitantes o clientes que desean ver el catálogo público sin tener que iniciar sesión obligatoriamente.
+Punto de entrada directo para visitantes o clientes que desean ver el catálogo público sin iniciar sesión.
 
-### Flujo de Ejecución:
+### Flujo:
 1. Requiere `config/helpers.php` y `controllers/PublicoController.php`.
 2. Instancia `PublicoController`.
-3. Ejecuta `$ctrl->index()`, cargando los quesos disponibles y mostrando la vista pública interactiva (`views/publico/catalogo.php`).
+3. Ejecuta `$ctrl->index()`, cargando el catálogo público con filtros.
+
+---
+
+## 5. `recuperar.php`
+
+### Propósito
+Punto de entrada para el flujo de recuperación de contraseña.
+
+### Flujo:
+1. Requiere `config/helpers.php` y `controllers/AuthController.php`.
+2. Instancia `AuthController`.
+3. Llama a `$auth->recuperar()`, que procesa el formulario de solicitud de recuperación y envía el correo con PHPMailer.
+
+---
+
+## 6. El enrutador `index.php` y el controlador Público
+
+### Cómo funciona el enrutamiento
+El archivo `index.php` actúa como Front Controller. Analiza los parámetros `?c=` (controlador) y `?a=` (acción) de la URL.
+
+### Lista de controladores válidos
+```php
+$controladoresValidos = [
+    'dashboard'   => 'DashboardController',
+    'productos'   => 'ProductoController',
+    'inventario'  => 'InventarioController',
+    'ventas'      => 'VentaController',
+    'historial'   => 'HistorialController',
+    'reportes'    => 'ReporteController',
+    'catalogo'    => 'CatalogoController',
+    'proveedores' => 'ProveedorController',
+    'carrito'     => 'CarritoController',
+    'publico'     => 'PublicoController',
+];
+```
+
+### Acciones públicas sin sesión
+El enrutador permite ciertas acciones sin autenticación:
+- Acciones del carrito: `agregar`, `actualizar`, `quitar`, `vaciar`, `index`
+- Acciones del controlador público: `inicio`, `index`, `cargarMasProductos`
+
+Si un usuario sin sesión intenta acceder a una sección protegida, se redirige a `login.php`.

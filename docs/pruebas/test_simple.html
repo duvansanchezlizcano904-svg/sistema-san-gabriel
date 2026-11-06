@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Simple - Agregar al Carrito</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        form {
+            margin: 20px 0;
+            text-align: center;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .info {
+            background: #e7f3ff;
+            padding: 15px;
+            border-left: 4px solid #007bff;
+            margin: 20px 0;
+        }
+        a {
+            display: inline-block;
+            margin: 10px 5px;
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        a:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🧀 Test Simple del Carrito</h1>
+        
+        <div class="info">
+            <strong>📝 Instrucciones:</strong>
+            <ol>
+                <li>Haz click en el botón de abajo</li>
+                <li>Se agregará un producto al carrito</li>
+                <li>Deberías ser redirigido con un mensaje de éxito</li>
+            </ol>
+        </div>
+
+        <form method="POST" action="index.php?c=carrito&a=agregar">
+            <input type="hidden" name="producto_id" value="1">
+            <input type="hidden" name="cantidad" value="1">
+            <input type="hidden" name="redirect" value="debug_carrito.php">
+            
+            <p>Producto: <strong>Queso Campesino (#1)</strong></p>
+            <p>Cantidad: <strong>1</strong></p>
+            
+            <button type="submit">
+                🛒 Agregar al Carrito
+            </button>
+        </form>
+
+        <hr style="margin: 30px 0;">
+
+        <div style="text-align: center;">
+            <h3>Enlaces de navegación:</h3>
+            <a href="debug_carrito.php">📊 Ver Estado del Carrito</a>
+            <a href="index.php">🏠 Ir a Index</a>
+            <a href="publico.php">🌐 Ir a Público</a>
+        </div>
+
+        <div class="info" style="margin-top: 30px; background: #fff3cd; border-color: #ffc107;">
+            <strong>⚠️ Si no funciona:</strong>
+            <ol>
+                <li>Verifica que Laragon esté corriendo</li>
+                <li>Verifica que la base de datos exista</li>
+                <li>Abre las herramientas de desarrollador (F12) y mira la consola</li>
+                <li>Revisa la pestaña "Network" para ver qué error devuelve el servidor</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>

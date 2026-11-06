@@ -14,6 +14,29 @@ class Producto {
     }
 
     /**
+     * Asegura que las nuevas variedades de quesos estén cargadas en la BD
+     */
+    public function asegurarCatalogoCompleto(): void {
+        static $verificado = false;
+        if ($verificado) return;
+        $verificado = true;
+
+        try {
+            $check = $this->db->query("SELECT COUNT(*) FROM productos WHERE codigo = 'QAR-006'")->fetchColumn();
+            if ((int)$check === 0) {
+                $sqlSeed = __DIR__ . '/../database/seeds/inserts_mas_quesos.sql';
+                if (file_exists($sqlSeed)) {
+                    $sql = file_get_contents($sqlSeed);
+                    $sql = preg_replace('/USE\s+`?[a-zA-Z0-9_]+`?;/i', '', $sql);
+                    $this->db->exec($sql);
+                }
+            }
+        } catch (Throwable $e) {
+            error_log("Producto::asegurarCatalogoCompleto(): " . $e->getMessage());
+        }
+    }
+
+    /**
      * Lista todos los productos con soporte para búsqueda y filtros avanzados
      */
     public function listarTodos(
@@ -24,12 +47,15 @@ class Producto {
         string $tipoLeche = '',
         string $intensidad = ''
     ): array {
+        $this->asegurarCatalogoCompleto();
         $sql = "SELECT * FROM productos WHERE 1=1";
         $params = [];
 
         if (!empty($busqueda)) {
-            $sql .= " AND (nombre LIKE :busqueda OR codigo LIKE :busqueda OR descripcion LIKE :busqueda)";
-            $params[':busqueda'] = '%' . $busqueda . '%';
+            $sql .= " AND (nombre LIKE :b1 OR codigo LIKE :b2 OR descripcion LIKE :b3)";
+            $params[':b1'] = '%' . $busqueda . '%';
+            $params[':b2'] = '%' . $busqueda . '%';
+            $params[':b3'] = '%' . $busqueda . '%';
         }
 
         if (!empty($tipo)) {
@@ -62,6 +88,94 @@ class Producto {
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetchAll();
+    }
+
+    /**
+     * Lista productos con paginación para carga infinita
+     * 
+     * @param int $pagina Número de página (1-indexed)
+     * @param int $porPagina Cantidad de productos por página
+     * @param string $busqueda Término de búsqueda
+     * @param string $tipo Filtro por tipo
+     * @param string $estado Filtro por estado
+     * @param string $categoria Filtro por categoría
+     * @return array ['productos' => array, 'total' => int, 'pagina' => int, 'porPagina' => int, 'hayMas' => bool]
+     */
+    public function listarConPaginacion(
+        int $pagina = 1,
+        int $porPagina = 8,
+        string $busqueda = '',
+        string $tipo = '',
+        string $estado = 'activo',
+        string $categoria = '',
+        string $tipoLeche = '',
+        string $intensidad = ''
+    ): array {
+        $this->asegurarCatalogoCompleto();
+        
+        // Construir consulta base con filtros
+        $whereSql = "WHERE 1=1";
+        $params = [];
+
+        if (!empty($busqueda)) {
+            $whereSql .= " AND (nombre LIKE :b1 OR codigo LIKE :b2 OR descripcion LIKE :b3)";
+            $params[':b1'] = '%' . $busqueda . '%';
+            $params[':b2'] = '%' . $busqueda . '%';
+            $params[':b3'] = '%' . $busqueda . '%';
+        }
+
+        if (!empty($tipo)) {
+            $whereSql .= " AND tipo = :tipo";
+            $params[':tipo'] = $tipo;
+        }
+
+        if (!empty($estado)) {
+            $whereSql .= " AND estado = :estado";
+            $params[':estado'] = $estado;
+        }
+
+        if (!empty($categoria)) {
+            $whereSql .= " AND categoria = :categoria";
+            $params[':categoria'] = $categoria;
+        }
+
+        if (!empty($tipoLeche)) {
+            $whereSql .= " AND tipo_leche = :tipo_leche";
+            $params[':tipo_leche'] = $tipoLeche;
+        }
+
+        if (!empty($intensidad)) {
+            $whereSql .= " AND intensidad_sabor = :intensidad";
+            $params[':intensidad'] = $intensidad;
+        }
+
+        // Contar total de productos que cumplen los filtros
+        $countSql = "SELECT COUNT(*) FROM productos {$whereSql}";
+        $stmtCount = $this->db->prepare($countSql);
+        $stmtCount->execute($params);
+        $total = (int)$stmtCount->fetchColumn();
+
+        // Calcular offset y asegurar enteros para compatibilidad nativa con PDO (ATTR_EMULATE_PREPARES => false)
+        $limitInt  = max(1, (int)$porPagina);
+        $offsetInt = max(0, (int)(($pagina - 1) * $limitInt));
+
+        // Obtener productos paginados (casteo a entero estricto evita error de sintaxis en MySQL con prepare nativo)
+        $sql = "SELECT * FROM productos {$whereSql} ORDER BY categoria ASC, nombre ASC LIMIT {$limitInt} OFFSET {$offsetInt}";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        $productos = $stmt->fetchAll();
+
+        // Calcular si hay más páginas
+        $hayMas = ($offsetInt + count($productos)) < $total;
+
+        return [
+            'productos' => $productos,
+            'total' => $total,
+            'pagina' => $pagina,
+            'porPagina' => $porPagina,
+            'hayMas' => $hayMas
+        ];
     }
 
     /**
@@ -98,11 +212,11 @@ class Producto {
     public function crear(array $datos): bool {
         $sql = "INSERT INTO productos 
                 (codigo, nombre, tipo, categoria, tipo_leche, intensidad_sabor, tiempo_maduracion, 
-                 peso_presentacion, origen, descripcion, precio_compra, precio_venta, cantidad, 
+                 peso_presentacion, origen, descripcion, imagen, precio_compra, precio_venta, cantidad, 
                  stock_minimo, unidad_medida, estado) 
                 VALUES 
                 (:codigo, :nombre, :tipo, :categoria, :tipo_leche, :intensidad_sabor, :tiempo_maduracion,
-                 :peso_presentacion, :origen, :descripcion, :precio_compra, :precio_venta, :cantidad, 
+                 :peso_presentacion, :origen, :descripcion, :imagen, :precio_compra, :precio_venta, :cantidad, 
                  :stock_minimo, :unidad_medida, :estado)";
 
         $stmt = $this->db->prepare($sql);
@@ -117,6 +231,7 @@ class Producto {
             ':peso_presentacion'  => $datos['peso_presentacion'] ?? null,
             ':origen'             => $datos['origen'] ?? null,
             ':descripcion'        => $datos['descripcion'] ?? '',
+            ':imagen'             => $datos['imagen'] ?? null,
             ':precio_compra'      => $datos['precio_compra'],
             ':precio_venta'       => $datos['precio_venta'],
             ':cantidad'           => $datos['cantidad'],
@@ -130,6 +245,9 @@ class Producto {
      * Actualiza un producto existente
      */
     public function actualizar(int $id, array $datos): bool {
+        // Si no se sube imagen nueva, mantener la actual
+        $imagenSql = array_key_exists('imagen', $datos) ? ",\n                imagen = :imagen" : '';
+
         $sql = "UPDATE productos SET 
                 codigo = :codigo,
                 nombre = :nombre,
@@ -146,11 +264,10 @@ class Producto {
                 cantidad = :cantidad,
                 stock_minimo = :stock_minimo,
                 unidad_medida = :unidad_medida,
-                estado = :estado
+                estado = :estado{$imagenSql}
                 WHERE id = :id";
 
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute([
+        $params = [
             ':id'                 => $id,
             ':codigo'             => $datos['codigo'],
             ':nombre'             => $datos['nombre'],
@@ -167,7 +284,29 @@ class Producto {
             ':cantidad'           => $datos['cantidad'],
             ':stock_minimo'       => $datos['stock_minimo'],
             ':unidad_medida'      => $datos['unidad_medida'],
-            ':estado'             => $datos['estado'] ?? 'activo'
+            ':estado'             => $datos['estado'] ?? 'activo',
+        ];
+
+        if (array_key_exists('imagen', $datos)) {
+            $params[':imagen'] = $datos['imagen'];
+        }
+
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute($params);
+    }
+
+    /**
+     * Cambia el estado de un producto (borrado lógico: activo / inactivo)
+     */
+    public function cambiarEstado(int $id, string $nuevoEstado): bool {
+        if (!in_array($nuevoEstado, ['activo', 'inactivo'], true)) {
+            throw new InvalidArgumentException("Estado no válido.");
+        }
+        $sql = "UPDATE productos SET estado = :estado WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            ':estado' => $nuevoEstado,
+            ':id'     => $id
         ]);
     }
 
@@ -195,11 +334,12 @@ class Producto {
      */
     public function descontarStock(int $id, int $cantidadVendida, ?PDO $conn = null): bool {
         $db = $conn ?: $this->db;
-        $sql = "UPDATE productos SET cantidad = cantidad - :cantidad WHERE id = :id AND cantidad >= :cantidad";
+        $sql = "UPDATE productos SET cantidad = cantidad - :cantidad_val WHERE id = :id AND cantidad >= :cantidad_min";
         $stmt = $db->prepare($sql);
         $stmt->execute([
-            ':cantidad' => $cantidadVendida,
-            ':id'       => $id
+            ':cantidad_val' => $cantidadVendida,
+            ':cantidad_min' => $cantidadVendida,
+            ':id'           => $id
         ]);
         return $stmt->rowCount() > 0;
     }
@@ -273,6 +413,35 @@ class Producto {
      */
     public function obtenerIntensidades(): array {
         return ['suave', 'medio', 'fuerte', 'muy fuerte'];
+    }
+
+    /**
+     * Devuelve la URL de la imagen de un producto.
+     * Prioridad: imagen guardada en BD → placeholder local.
+     *
+     * @param  array  $producto  Fila de la tabla productos
+     * @return string            Ruta relativa lista para <img src="...">.
+     */
+    public static function imagenUrl(array $producto): string {
+        $imgGuardada = trim($producto['imagen'] ?? $producto['imagen_url'] ?? '');
+        if ($imgGuardada !== '') {
+            if (filter_var($imgGuardada, FILTER_VALIDATE_URL) || str_starts_with($imgGuardada, 'http')) {
+                return $imgGuardada;
+            }
+            if (file_exists(__DIR__ . '/../' . $imgGuardada)) {
+                return $imgGuardada;
+            }
+        }
+        $catMap = [
+            'Quesos Frescos'     => 'public/img/productos/queso_fresco.jpg',
+            'Quesos Madurados'   => 'public/img/productos/parmesano.jpg',
+            'Quesos Artesanales' => 'public/img/productos/queso_artesanal.jpg',
+            'Quesos Cremosos'    => 'public/img/productos/brie.jpg',
+            'Quesos de Cabra'    => 'public/img/productos/queso_cabra.jpg',
+            'Quesos Azules'      => 'public/img/productos/queso_azul.jpg',
+        ];
+        $cat = $producto['categoria'] ?? $producto['tipo'] ?? '';
+        return $catMap[$cat] ?? 'public/img/productos/queso_fresco.jpg';
     }
 
     /**

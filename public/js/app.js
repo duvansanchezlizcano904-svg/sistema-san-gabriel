@@ -170,4 +170,52 @@ document.addEventListener('DOMContentLoaded', function () {
     function fmt(num) {
         return Number(num).toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
+
+    // ── 5. Control de cantidad en tarjetas de producto ──────
+    window.cambiarCantidad = function(btn, delta, maxStock = 999) {
+        const form = btn.closest('form') || btn.closest('.home-buy-form');
+        if (!form) return;
+        
+        const input = form.querySelector('input[name="cantidad"]');
+        if (!input) return;
+        
+        let valor = parseInt(input.value) || 1;
+        valor = Math.max(1, Math.min(valor + delta, maxStock));
+        input.value = valor;
+    };
+
+    // ── 6. Abrir carrito automáticamente si hay parámetro ───
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('open_cart') === '1') {
+        const offcanvasCarrito = document.getElementById('offcanvasCarrito');
+        if (offcanvasCarrito && typeof bootstrap !== 'undefined') {
+            const bsOffcanvas = new bootstrap.Offcanvas(offcanvasCarrito);
+            bsOffcanvas.show();
+        }
+    }
+
+    // ── 7. Confirmación de feedback al agregar al carrito ───
+    const forms = document.querySelectorAll('form[action*="carrito"]');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const productoNombre = this.closest('.home-card')?.querySelector('.home-card-nombre')?.textContent ||
+                                  this.closest('.pub-card')?.querySelector('.pub-card-nombre')?.textContent ||
+                                  'Producto';
+            const cantidad = this.querySelector('input[name="cantidad"]')?.value || '1';
+            
+            // Mostrar feedback visual temporal
+            const btn = this.querySelector('button[type="submit"]');
+            if (btn) {
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="bi bi-check2"></i> Agregando...';
+                btn.disabled = true;
+                
+                // Restaurar después de un momento
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
+                }, 800);
+            }
+        });
+    });
 });

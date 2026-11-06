@@ -8,6 +8,12 @@
 
 html, body {
     font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100%;
+}
+
+/* Solo bloquear el scroll en la landing completa de login si no hay scroll deseado */
+body.login-locked,
+body:has(.hero-page) {
     height: 100%;
     overflow: hidden;
 }

@@ -1,5 +1,5 @@
 /* ==============================================================
-   Quesos San Gabriel — Estilos Generales del Panel Admin
+   Quesos San Gabriel â€” Estilos Generales del Panel Admin
    Tema: Azul oscuro + Dorado quesero + Blanco limpio
    ============================================================== */
 
@@ -27,7 +27,7 @@
     --sg-text-muted:    #64748b;
     --sg-border:        #e2e8f0;
 
-    /* Semánticos */
+    /* SemÃ¡nticos */
     --sg-success:       #10b981;
     --sg-warning:       #f59e0b;
     --sg-danger:        #ef4444;
@@ -59,14 +59,14 @@ body {
     overflow-x: hidden;
 }
 
-/* ── Layout ── */
+/* â”€â”€ Layout â”€â”€ */
 .app-wrapper {
     display: flex;
     width: 100%;
     min-height: 100vh;
 }
 
-/* ── Sidebar ── */
+/* â”€â”€ Sidebar â”€â”€ */
 .sidebar {
     width: 270px;
     background-color: var(--sg-sidebar-bg);
@@ -176,7 +176,7 @@ body {
 .user-name { font-size: 0.875rem; font-weight: 600; color: #f1f5f9; }
 .user-role { font-size: 0.72rem; color: #94a3b8; }
 
-/* ── Main content ── */
+/* â”€â”€ Main content â”€â”€ */
 .main-wrapper { flex-grow: 1; display: flex; flex-direction: column; min-width: 0; }
 
 .top-navbar {
@@ -190,7 +190,7 @@ body {
 
 .content-body { padding: 1.75rem; flex-grow: 1; }
 
-/* ── Cards ── */
+/* â”€â”€ Cards â”€â”€ */
 .card-lacteo {
     background: var(--sg-card-bg);
     border: 1px solid var(--sg-border);
@@ -214,7 +214,7 @@ body {
     margin: 0;
 }
 
-/* ── Stat cards ── */
+/* â”€â”€ Stat cards â”€â”€ */
 .stat-card {
     padding: 1.35rem;
     border-radius: 12px;
@@ -258,7 +258,7 @@ body {
     letter-spacing: 0.03em;
 }
 
-/* ── Tablas ── */
+/* â”€â”€ Tablas â”€â”€ */
 .table-lacteo { margin: 0; border-collapse: separate; border-spacing: 0; }
 .table-lacteo thead th {
     background-color: #f8fafc;
@@ -279,7 +279,7 @@ body {
 }
 .table-lacteo tbody tr:hover { background-color: #f8fafc; }
 
-/* ── Botones ── */
+/* â”€â”€ Botones â”€â”€ */
 .btn-sg-primary {
     background-color: var(--sg-primary);
     border-color: var(--sg-primary);
@@ -297,7 +297,7 @@ body {
 /* Alias heredado */
 .btn-lacteo-primary { @extend .btn-sg-primary; }
 
-/* ── Hero Dashboard ── */
+/* â”€â”€ Hero Dashboard â”€â”€ */
 .dashboard-hero {
     position: relative;
     border-radius: 16px;
@@ -356,7 +356,7 @@ body {
 .hero-label-text { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.6); font-weight: 600; }
 .hero-label-number { display: block; font-size: 2rem; font-weight: 800; line-height: 1.1; color: #fbbf24; }
 
-/* ── Print ── */
+/* â”€â”€ Print â”€â”€ */
 @media print {
     .sidebar, .top-navbar, .no-print, .btn, .pagination, .alert { display: none !important; }
     body { background-color: #fff !important; color: #000 !important; }
@@ -369,7 +369,7 @@ body {
 }
 .print-header { display: none; }
 
-/* ── Responsive sidebar ── */
+/* â”€â”€ Responsive sidebar â”€â”€ */
 @media (max-width: 991.98px) {
     .sidebar { position: fixed; top: 0; bottom: 0; left: -270px; }
     .sidebar.show { left: 0; }
@@ -382,10 +382,10 @@ body {
 }
 
 /* ==============================================================
-   Catálogo y Carrito — Estilos Avanzados
+   CatÃ¡logo y Carrito â€” Estilos Avanzados
    ============================================================== */
 
-/* ── Controles de cantidad en el carrito ── */
+/* â”€â”€ Controles de cantidad en el carrito â”€â”€ */
 .carrito-qty-control {
     display: flex;
     align-items: center;
@@ -429,7 +429,7 @@ body {
     color: var(--sg-text);
 }
 
-/* ── Tabla del carrito responsiva (móvil = tarjetas) ── */
+/* â”€â”€ Tabla del carrito responsiva (mÃ³vil = tarjetas) â”€â”€ */
 @media (max-width: 767.98px) {
     .table-lacteo thead {
         display: none;
@@ -489,15 +489,15 @@ body {
     }
 }
 
-/* ── Tags de intensidad con colores ── */
+/* â”€â”€ Tags de intensidad con colores â”€â”€ */
 .badge.bg-success-subtle { background-color: #d1fae5 !important; color: #059669 !important; }
 .badge.bg-warning-subtle { background-color: #fef3c7 !important; color: #d97706 !important; }
 .badge.bg-orange-subtle  { background-color: #fed7aa !important; color: #ea580c !important; }
 .badge.bg-danger-subtle  { background-color: #fee2e2 !important; color: #dc2626 !important; }
 
-/* ── Filtros avanzados responsivos ── */
+/* â”€â”€ Filtros avanzados responsivos â”€â”€ */
 @media (max-width: 479.98px) {
-    /* Móvil muy pequeño: cada filtro en su propia fila */
+    /* MÃ³vil muy pequeÃ±o: cada filtro en su propia fila */
     .card-lacteo .row.g-3 > div[class*="col-"] {
         flex: 0 0 100%;
         max-width: 100%;
@@ -505,7 +505,7 @@ body {
 }
 
 @media (min-width: 480px) and (max-width: 767.98px) {
-    /* Móvil: 2 columnas */
+    /* MÃ³vil: 2 columnas */
     .card-lacteo .row.g-3 > div.col-12.col-sm-6 {
         flex: 0 0 50%;
         max-width: 50%;
@@ -521,20 +521,20 @@ body {
     }
 }
 
-/* ── Badges de filtros activos ── */
+/* â”€â”€ Badges de filtros activos â”€â”€ */
 .badge .text-decoration-none:hover {
     text-decoration: underline !important;
 }
 
-/* Ajustar espaciado del botón × en badges */
+/* Ajustar espaciado del botÃ³n Ã— en badges */
 .badge a[href] {
     margin-left: 0.25rem;
     font-weight: 700;
 }
 
-/* ── Grid de productos responsivo ── */
+/* â”€â”€ Grid de productos responsivo â”€â”€ */
 @media (max-width: 479.98px) {
-    /* Móvil: 1 columna */
+    /* MÃ³vil: 1 columna */
     .row.g-4 > .col-12.col-sm-6.col-lg-4.col-xl-3 {
         flex: 0 0 100%;
         max-width: 100%;
@@ -542,7 +542,7 @@ body {
 }
 
 @media (min-width: 480px) and (max-width: 767.98px) {
-    /* Móvil grande: 2 columnas */
+    /* MÃ³vil grande: 2 columnas */
     .row.g-4 > .col-12.col-sm-6.col-lg-4.col-xl-3 {
         flex: 0 0 50%;
         max-width: 50%;
@@ -561,7 +561,7 @@ body {
     /* Desktop: 4 columnas (ya definido con col-xl-3) */
 }
 
-/* ── Tarjetas de producto mejoradas ── */
+/* â”€â”€ Tarjetas de producto mejoradas â”€â”€ */
 .card-lacteo .badge {
     font-size: 0.72rem;
     padding: 0.25rem 0.6rem;
@@ -571,7 +571,7 @@ body {
     font-size: 0.8rem;
 }
 
-/* Modal de características (si se implementa) */
+/* Modal de caracterÃ­sticas (si se implementa) */
 .modal-caracteristicas .list-group-item {
     border: none;
     border-bottom: 1px solid var(--sg-border);
@@ -582,9 +582,9 @@ body {
     border-bottom: none;
 }
 
-/* ── Ajustes finales de responsive ── */
+/* â”€â”€ Ajustes finales de responsive â”€â”€ */
 @media (max-width: 767.98px) {
-    /* Reducir padding en móvil */
+    /* Reducir padding en mÃ³vil */
     .content-body {
         padding: 1.25rem;
     }
@@ -593,14 +593,14 @@ body {
         padding: 1rem !important;
     }
     
-    /* Hacer botones más grandes en móvil */
+    /* Hacer botones mÃ¡s grandes en mÃ³vil */
     .btn-sm {
         font-size: 0.9rem;
         padding: 0.5rem 0.85rem;
     }
 }
 
-/* ── Animaciones suaves ── */
+/* â”€â”€ Animaciones suaves â”€â”€ */
 .card-lacteo,
 .badge,
 .btn {
@@ -611,4 +611,575 @@ body {
     border-color: var(--sg-primary);
     outline: 0;
     box-shadow: 0 0 0 0.2rem rgba(29, 78, 216, 0.25);
+}
+/* ==============================================================
+   PaginaciÃ³n Profesional para Panel Admin
+   ============================================================== */
+.lacteo-pagination-wrapper {
+    padding: 1rem 0;
+}
+
+.lacteo-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.lacteo-pagination .page-item {
+    margin: 0;
+}
+
+.lacteo-pagination .page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 0.75rem;
+    margin: 0 2px;
+    border: 1px solid var(--sg-border);
+    border-radius: 8px;
+    background: var(--sg-card-bg);
+    color: var(--sg-text);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.lacteo-pagination .page-link:hover:not(.disabled):not(.active) {
+    background: var(--sg-primary-light);
+    border-color: var(--sg-primary);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.lacteo-pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, var(--sg-primary-dark), var(--sg-primary));
+    border-color: var(--sg-primary);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+
+.lacteo-pagination .page-item.disabled .page-link {
+    background: #f1f5f9;
+    border-color: #e2e8f0;
+    color: #94a3b8;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.lacteo-pagination .page-item.disabled .page-link:hover {
+    transform: none;
+    box-shadow: none;
+    background: #f1f5f9;
+    color: #94a3b8;
+}
+
+/* Responsive pagination */
+@media (max-width: 480px) {
+    .lacteo-pagination .page-link {
+        min-width: 36px;
+        height: 36px;
+        padding: 0 0.5rem;
+        font-size: 0.8rem;
+        margin: 0 1px;
+    }
+}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   CATÃLOGO DE QUESOS â€” DISEÃ‘O PREMIUM GOURMET
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+/* â”€â”€ SecciÃ³n envolvente con fondo oscuro elegante â”€â”€ */
+.catalogo-section {
+    background: linear-gradient(160deg, #0d1117 0%, #111827 60%, #1a1f2e 100%);
+    border-radius: 24px;
+    padding: 3rem 2.5rem 3.5rem;
+    margin-top: 2.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* DecoraciÃ³n de fondo */
+.catalogo-section::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -120px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(29,78,216,.18) 0%, transparent 70%);
+    pointer-events: none;
+}
+.catalogo-section::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: -80px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(217,119,6,.12) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+/* â”€â”€ Encabezado â”€â”€ */
+.catalogo-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+}
+
+.catalogo-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #d97706;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.catalogo-eyebrow i { font-size: 0.8rem; }
+
+.catalogo-title {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #f8fafc;
+    line-height: 1.15;
+    margin: 0 0 0.4rem 0;
+    letter-spacing: -0.02em;
+}
+
+.catalogo-title-accent {
+    background: linear-gradient(135deg, #60a5fa 0%, #d97706 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.catalogo-title-quesos {
+    color: #60a5fa;
+}
+
+.catalogo-title-artesanales {
+    color: #f59e0b;
+}
+
+.catalogo-subtitle {
+    font-size: 0.875rem;
+    color: #94a3b8;
+    margin: 0;
+}
+
+.btn-catalogo-ver {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.65rem 1.4rem;
+    background: linear-gradient(135deg, #d97706, #b45309);
+    color: #fff;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-decoration: none;
+    white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(217,119,6,.35);
+    transition: all 0.25s ease;
+    position: relative;
+    z-index: 1;
+}
+.btn-catalogo-ver:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 28px rgba(217,119,6,.5);
+    color: #fff;
+}
+
+/* â”€â”€ Filtros â”€â”€ */
+.catalogo-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.filtro-btn {
+    padding: 0.42rem 1.1rem;
+    border: 1.5px solid rgba(255,255,255,.12);
+    border-radius: 50px;
+    background: rgba(255,255,255,.05);
+    color: #94a3b8;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    backdrop-filter: blur(4px);
+}
+.filtro-btn:hover {
+    border-color: rgba(96,165,250,.5);
+    color: #60a5fa;
+    background: rgba(96,165,250,.08);
+}
+.filtro-btn.active {
+    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+    border-color: #3b82f6;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(29,78,216,.4);
+}
+
+/* â”€â”€ GRID principal â”€â”€ */
+.catalogo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* â”€â”€ Tarjeta de queso â”€â”€ */
+.queso-card {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1),
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur(8px);
+}
+.queso-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 24px 60px rgba(0,0,0,.5),
+                0 0 0 1px rgba(96,165,250,.3);
+    border-color: rgba(96,165,250,.3);
+}
+.queso-card.card-entering {
+    animation: cardPopDark 0.35s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes cardPopDark {
+    from { opacity: 0; transform: scale(0.85) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* â”€â”€ Zona imagen â”€â”€ */
+.queso-card-img-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: #1e293b;
+}
+
+.queso-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+    filter: brightness(0.92) saturate(1.1);
+}
+.queso-card-img--contain {
+    object-fit: contain !important;
+    padding: 1.25rem !important;
+    width: 82% !important;
+    height: 82% !important;
+    margin: auto !important;
+    filter: drop-shadow(0 10px 22px rgba(0,0,0,0.55)) !important;
+}
+.queso-card:hover .queso-card-img {
+    transform: scale(1.1);
+    filter: brightness(1) saturate(1.2);
+}
+.queso-card:hover .queso-card-img--contain {
+    transform: scale(1.08) !important;
+}
+
+/* Gradiente inferior permanente sobre imagen */
+.queso-card-img-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        transparent 35%,
+        rgba(0,0,0,.5) 70%,
+        rgba(0,0,0,.85) 100%
+    );
+    pointer-events: none;
+}
+
+/* â”€â”€ Badges en imagen â”€â”€ */
+.queso-badges-top {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    right: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.cat-badge {
+    display: inline-block;
+    padding: 0.28rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,.2);
+    text-transform: uppercase;
+}
+
+.stock-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.28rem 0.7rem;
+    border-radius: 50px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,.15);
+}
+.stock-badge.ok      { background: rgba(16,185,129,.25); color: #6ee7b7; border-color: rgba(16,185,129,.3); }
+.stock-badge.bajo    { background: rgba(245,158,11,.25); color: #fcd34d; border-color: rgba(245,158,11,.3); }
+.stock-badge.agotado { background: rgba(239,68,68,.25);  color: #fca5a5; border-color: rgba(239,68,68,.3); }
+
+/* â”€â”€ Overlay hover con botones â”€â”€ */
+.queso-card-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 1rem;
+    opacity: 0;
+    z-index: 3;
+    transition: opacity 0.28s ease;
+}
+.queso-card:hover .queso-card-overlay { opacity: 1; }
+
+.overlay-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-decoration: none;
+    background: rgba(255,255,255,.93);
+    color: #1e3a8a;
+    backdrop-filter: blur(8px);
+    transform: translateY(12px);
+    transition: all 0.25s ease;
+    border: none;
+}
+.queso-card:hover .overlay-btn { transform: translateY(0); }
+.overlay-btn:hover { background: #fff; transform: translateY(-2px) !important; color: #1e3a8a; }
+
+.overlay-btn-gold {
+    background: linear-gradient(135deg, #d97706, #b45309);
+    color: #fff;
+}
+.overlay-btn-gold:hover { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
+
+/* â”€â”€ Texto flotante sobre la imagen (parte inferior) â”€â”€ */
+.queso-img-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.6rem 0.85rem 0.5rem;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+}
+.queso-img-nombre {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.2;
+    text-shadow: 0 1px 6px rgba(0,0,0,.5);
+}
+.queso-img-tipo {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,.65);
+    font-weight: 500;
+    margin-top: 0.15rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* â”€â”€ Cuerpo de tarjeta â”€â”€ */
+.queso-card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 0.9rem 1rem 0.8rem;
+    gap: 0.25rem;
+    background: rgba(255,255,255,.03);
+}
+
+.queso-card-tipo { display: none; } /* nombre ya va en la imagen */
+.queso-card-nombre { display: none; }
+
+.queso-card-desc {
+    font-size: 0.77rem;
+    color: #64748b;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* â”€â”€ Detalles rÃ¡pidos â”€â”€ */
+.queso-card-detalles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.75rem;
+    margin-top: 0.5rem;
+}
+.detalle-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.73rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+.detalle-item i { font-size: 0.75rem; }
+
+/* â”€â”€ Footer: precio + cÃ³digo â”€â”€ */
+.queso-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 0.7rem;
+    border-top: 1px solid rgba(255,255,255,.07);
+}
+
+.queso-precio { display: flex; flex-direction: column; }
+.precio-label {
+    font-size: 0.6rem;
+    color: #64748b;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+}
+.precio-valor {
+    font-size: 1.05rem;
+    font-weight: 900;
+    color: #60a5fa;
+    letter-spacing: -0.01em;
+}
+
+.queso-codigo {
+    font-size: 0.65rem;
+    color: #475569;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+    padding: 0.2rem 0.55rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.03em;
+}
+
+/* â”€â”€ Estado vacÃ­o â”€â”€ */
+.catalogo-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 5rem 2rem;
+    color: #475569;
+}
+.catalogo-empty i { font-size: 3.5rem; display: block; margin-bottom: 1rem; opacity: .4; }
+.catalogo-empty p { color: #64748b; }
+
+/* â”€â”€ Responsive â”€â”€ */
+@media (max-width: 1024px) {
+    .catalogo-section { padding: 2rem 1.5rem 2.5rem; }
+    .catalogo-title { font-size: 1.6rem; }
+}
+@media (max-width: 768px) {
+    .catalogo-section { padding: 1.75rem 1.25rem 2rem; border-radius: 16px; }
+    .catalogo-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; }
+    .catalogo-header { flex-direction: column; align-items: flex-start; }
+    .catalogo-title { font-size: 1.4rem; }
+}
+@media (max-width: 480px) {
+    .catalogo-section { padding: 1.25rem 1rem 1.5rem; border-radius: 12px; }
+    .catalogo-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+    .precio-valor { font-size: 0.9rem; }
+    .btn-catalogo-ver { font-size: 0.8rem; padding: 0.55rem 1rem; }
+}
+
+
+
+/* ══════════════════════════════════════════════════════════════
+   BARRA DE DESPLAZAMIENTO VERTICAL (Estilo Imagen 1)
+   ══════════════════════════════════════════════════════════════ */
+html {
+    overflow-y: scroll !important;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: #8e8e93 #20232a;
+}
+
+body {
+    overflow-y: auto !important;
+}
+
+::-webkit-scrollbar {
+    width: 14px;
+    height: 14px;
+}
+
+::-webkit-scrollbar-track {
+    background: #20232a;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #8e8e93;
+    border-radius: 999px;
+    border: 3px solid #20232a;
+    transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a1a1aa;
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: #d4d4d8;
+}
+
+::-webkit-scrollbar-button {
+    display: block;
+    height: 16px;
+    background: #20232a;
+}
+
+::-webkit-scrollbar-button:vertical:decrement {
+    background: #20232a url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 16 16'%3E%3Cpath fill='%238e8e93' d='M8 4l6 8H2z'/%3E%3C/svg%3E") no-repeat center center;
+}
+
+::-webkit-scrollbar-button:vertical:increment {
+    background: #20232a url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 16 16'%3E%3Cpath fill='%238e8e93' d='M8 12l6-8H2z'/%3E%3C/svg%3E") no-repeat center center;
 }

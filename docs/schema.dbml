@@ -18,7 +18,14 @@ Table productos {
   codigo varchar(30) [unique, not null]
   nombre varchar(120) [not null]
   tipo varchar(60) [not null]
+  categoria varchar(60)
+  tipo_leche varchar(60)
+  intensidad_sabor varchar(30) [note: 'Enum: suave, medio, fuerte, muy fuerte']
+  tiempo_maduracion varchar(60)
+  peso_presentacion varchar(60)
+  origen varchar(100)
   descripcion text
+  imagen varchar(255) [note: 'Ruta relativa: public/img/productos/XXX.jpg']
   precio_compra decimal(10,2) [not null, default: 0.00]
   precio_venta decimal(10,2) [not null, default: 0.00]
   cantidad int [not null, default: 0]

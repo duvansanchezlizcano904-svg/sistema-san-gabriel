@@ -1,129 +1,123 @@
-# Módulo 03: Modelos de Datos (Capa de Negocio y Persistencia)
+# Módulo 03: Modelos de Datos
 
-Este documento detalla cada una de las clases del directorio `models/`, encargadas de interactuar con la base de datos MySQL mediante consultas preparadas PDO y aplicar las reglas de negocio del sistema lácteo.
+Este documento detalla las clases del directorio `models/`, encargadas de interactuar con la base de datos mediante consultas preparadas PDO.
 
 ---
 
 ## 1. `models/Usuario.php`
 
 ### Propósito
-Gestiona la autenticación, recuperación de credenciales y consulta de perfiles de usuario (Administrador y Cliente).
+Gestiona la autenticación, registro, recuperación de credenciales y consulta de perfiles de usuario.
 
 ### Métodos:
 * **`obtenerPorUsuario(string $usuario): ?array`**
-  * Busca en la tabla `usuarios` el registro que coincida exactamente con el nombre de usuario.
-  * Retorna los campos `id`, `nombre`, `usuario`, `password`, `email`, `rol` y `creado_en`.
+  * Busca en la tabla `usuarios` por nombre de usuario.
 * **`obtenerPorId(int $id): ?array`**
-  * Obtiene la información del usuario a partir de su identificador primario.
-* **`autenticar(string $usuario, string $password): ?array`**
-  * Busca al usuario por su nombre.
-  * Compara la contraseña en texto plano ingresada contra el hash seguro en la base de datos utilizando `password_verify($password, $user['password'])`.
-  * Retorna los datos del usuario si la verificación es exitosa o `null` si es incorrecta.
+  * Obtiene datos del usuario por su ID.
+* **`obtenerPorEmail(string $email): ?array`**
+  * Busca un usuario por su correo electrónico.
+* **`autenticar(string $emailOUsuario, string $password): ?array`**
+  * Valida credenciales usando `password_verify`. Acepta email o nombre de usuario.
+* **`registrar(string $nombre, string $email, string $telefono, string $password): bool`**
+  * Registra un nuevo cliente. Genera nombre de usuario único a partir del email. Hashea la contraseña con `password_hash`.
+* **`guardarTokenRecuperacion(string $email, string $token, string $expiracion): bool`**
+  * Guarda el token y fecha de expiración (1 hora) para recuperación de contraseña. Crea las columnas si no existen.
+* **`obtenerPorTokenRecuperacion(string $token): ?array`**
+  * Busca usuario por token válido (no expirado).
+* **`actualizarPasswordPorToken(string $token, string $nuevaPassword): bool`**
+  * Actualiza la contraseña y limpia el token de recuperación.
 
 ---
 
 ## 2. `models/Producto.php`
 
 ### Propósito
-Gestiona el catálogo de variedades de queso, cálculo de estados de inventario, stock crítico y operaciones CRUD.
+Gestiona el catálogo de quesos, inventario, filtros avanzados y paginación.
 
 ### Métodos:
-* **`listarTodos(string $busqueda = '', string $tipo = '', string $estado = ''): array`**
-  * Lista productos aplicando filtros dinámicos por término de búsqueda (nombre, código o descripción), variedad/tipo de queso y estado (`activo` o `inactivo`).
+* **`listarTodos(...)`**
+  * Lista productos con filtros por búsqueda, tipo, estado, categoría, tipo de leche e intensidad de sabor. Evita errores HY093 usando parámetros únicos (`:b1`, `:b2`, `:b3`).
+* **`listarConPaginacion(...)`**
+  * Lista productos con paginación para carga infinita ("Cargar más"). Soporta los mismos filtros que `listarTodos`.
 * **`obtenerPorId(int $id): ?array`**
-  * Retorna los datos de un queso específico por su clave primaria.
+  * Obtiene un producto por su ID.
 * **`existeCodigo(string $codigo, ?int $ignorarId = null): bool`**
-  * Comprueba si un código (ej: `LAC-001`) ya existe en la base de datos para evitar duplicados. Si se pasa `$ignorarId`, permite actualizar otros campos de un producto conservando su código.
-* **`crear(array $datos): int`**
-  * Inserta un nuevo producto lácteo con validación de tipos y campos (`codigo`, `nombre`, `tipo`, `descripcion`, `precio_compra`, `precio_venta`, `cantidad`, `stock_minimo`, `unidad_medida`, `estado`).
+  * Verifica si un código ya existe.
+* **`crear(array $datos): bool`**
+  * Inserta un nuevo producto con todas las columnas de categorización.
 * **`actualizar(int $id, array $datos): bool`**
-  * Modifica los datos de un queso existente en la base de datos.
+  * Actualiza un producto existente.
 * **`cambiarEstado(int $id, string $nuevoEstado): bool`**
-  * Realiza el borrado lógico alternando el estado entre `'activo'` e `'inactivo'`.
+  * Borrado lógico entre 'activo' e 'inactivo'.
 * **`eliminar(int $id): bool`**
-  * Ejecuta el borrado físico de la fila en la tabla `productos`.
-* **`tieneVentasAsociadas(int $id): bool`**
-  * Consulta en la tabla `detalle_ventas` si el queso ha sido vendido alguna vez. Protege la integridad referencial impidiendo el borrado físico si tiene histórico de ventas.
-* **`obtenerTipos(): array`**
-  * Retorna los tipos de quesos registrados actualmente (`DISTINCT tipo`).
+  * Borra físicamente solo si no tiene ventas asociadas.
+* **`descontarStock(int $id, int $cantidadVendida, ?PDO $conn = null): bool`**
+  * Descuenta inventario dentro de una transacción. Usa `:cantidad_val` y `:cantidad_min` separados para evitar HY093.
 * **`obtenerEstadisticas(): array`**
-  * Calcula métricas globales de inventario: total de variedades, stock total en bodega, productos con stock bajo ($\le$ stock mínimo) y productos agotados ($= 0$).
-* **`obtenerProductosStockBajo(): array`**
-  * Retorna la lista de quesos cuyas existencias están en cero o por debajo del umbral mínimo de seguridad.
+  * Métricas globales: total productos, disponibles, stock bajo, agotados, valor del inventario.
+* **`obtenerProductosCriticos(): array`**
+  * Productos con stock bajo o agotados.
+* **`obtenerTipos(): array`**, **`obtenerCategorias(): array`**, **`obtenerTiposLeche(): array`**, **`obtenerIntensidades(): array`**
+  * Listas para filtros dinámicos.
+* **`imagenUrl(array $producto): string`**
+  * Resuelve la URL de imagen del producto (BD, mapeo por nombre, o placeholder).
+* **`obtenerEstadisticasPorCategoria(): array`**
+  * Estadísticas agrupadas por categoría.
 
 ---
 
 ## 3. `models/Venta.php`
 
 ### Propósito
-Controla el proceso de facturación en punto de venta (POS), generación de consecutivos correlativos, reportes financieros y auditoría con **transacciones atómicas PDO**.
+Controla el proceso de facturación POS, generación de consecutivos y transacciones atómicas.
 
 ### Métodos:
 * **`generarNumeroVenta(): string`**
-  * Consulta el último ID de venta y genera un código correlativo formateado (ej: `VNT-00001`, `VNT-00002`).
+  * Genera código correlativo (VNT-00001).
 * **`registrarVenta(array $datosVenta, array $items): int`**
-  * **Transacción Atómica (`beginTransaction`, `commit`, `rollBack`):**
-    1. Valida que haya al menos un ítem y que las cantidades sean mayores a 0.
-    2. Comprueba que el producto exista, esté activo y cuente con stock suficiente.
-    3. Inserta el encabezado en la tabla `ventas` con número correlativo, fecha, total, cliente y notas.
-    4. Inserta cada producto en `detalle_ventas` con su precio unitario y subtotal.
-    5. Descuenta el inventario automáticamente mediante `UPDATE productos SET cantidad = cantidad - :cantidad`.
-    6. Confirma la transacción y retorna el `id` de la venta creada. Si ocurre cualquier error, cancela todos los cambios con `rollBack()`.
-* **`listarHistorial(string $fechaInicio = '', string $fechaFin = '', string $busqueda = ''): array`**
-  * Retorna las ventas filtradas por fechas o por nombre de cliente / código de factura.
+  * Transacción atómica: valida stock, inserta venta, inserta detalles, descuenta inventario. Usa `beginTransaction`, `commit`, `rollBack`.
+* **`listarHistorial(...)`**
+  * Lista ventas con filtros por fecha y búsqueda.
 * **`obtenerPorId(int $id): ?array`**
-  * Retorna el encabezado de una venta incluyendo el nombre del cajero/administrador que la registró.
+  * Obtiene una venta con datos del usuario que la registró.
 * **`obtenerDetalle(int $ventaId): array`**
-  * Retorna el desglose de ítems vendidos con sus cantidades, unidades de medida y precios.
-* **`obtenerUltimasVentas(int $limite = 5): array`**
-  * Consulta las ventas más recientes para los paneles informativos del Dashboard.
+  * Lista los productos de una venta.
+* **`obtenerUltimasVentas(int $limite): array`**
+  * Ventas más recientes para el Dashboard.
 * **`obtenerEstadisticas(): array`**
-  * Retorna el acumulado total de ventas, dinero recaudado, ventas del día y cantidad de transacciones.
-* **`obtenerProductosMasVendidos(int $limite = 5): array`**
-  * Calcula el ranking de quesos con mayor rotación ordenados por cantidad de unidades vendidas.
+  * Total ventas, dinero recaudo, ventas del día.
+* **`obtenerProductosMasVendidos(int $limite): array`**
+  * Ranking de productos más vendidos.
 
 ---
 
 ## 4. `models/Proveedor.php`
 
 ### Propósito
-Gestiona el catálogo de empresas y productores lecheros que abastecen a la quesería.
+Gestiona el catálogo de proveedores de leche y suministros.
 
 ### Métodos:
 * **`listarTodos(string $busqueda = '', string $estado = ''): array`**
-  * Retorna proveedores filtrados por nombre, contacto, teléfono, correo o NIT.
+  * Lista proveedores con filtros. Evita HY093 con parámetros únicos.
 * **`obtenerPorId(int $id): ?array`**
-  * Busca a un proveedor por su ID.
 * **`existeNit(string $nit, ?int $ignorarId = null): bool`**
-  * Valida que no existan dos proveedores con el mismo NIT o cédula fiscal.
-* **`crear(array $datos): int`**
-  * Registra un nuevo proveedor en la base de datos.
-* **`actualizar(int $id, array $datos): bool`**
-  * Actualiza la información de contacto y fiscal del proveedor.
-* **`cambiarEstado(int $id, string $nuevoEstado): bool`**
-  * Alterna el estado del proveedor entre `'activo'` e `'inactivo'`.
-* **`eliminar(int $id): bool`**
-  * Elimina físicamente un registro de proveedor.
+* **`crear(array $datos): int`**, **`actualizar(int $id, array $datos): bool`**
+* **`cambiarEstado(int $id, string $nuevoEstado): bool`**, **`eliminar(int $id): bool`**
 * **`obtenerEstadisticas(): array`**
-  * Retorna el conteo total de proveedores, activos e inactivos.
 
 ---
 
 ## 5. `models/Pedido.php`
 
 ### Propósito
-Controla los pedidos generados por clientes desde el carrito de compras en línea.
+Controla los pedidos generados por clientes desde el carrito en línea.
 
 ### Métodos:
 * **`generarNumeroPedido(): string`**
-  * Genera el consecutivo único para pedidos en línea (ej: `PED-00001`).
+  * Genera correlativo PED-00001.
 * **`registrarPedido(array $datosPedido, array $items): int`**
-  * Ejecuta una transacción atómica que valida las existencias en tiempo real, descuenta el stock de bodega, inserta la orden en `pedidos` y los renglones en `detalle_pedidos`.
+  * Transacción atómica que valida stock, descuenta inventario, crea el pedido y sus detalles.
 * **`obtenerPorId(int $id): ?array`**
-  * Consulta los datos de un pedido.
 * **`obtenerDetalles(int $pedidoId): array`**
-  * Consulta la lista de productos contenidos dentro de un pedido en línea.
 * **`listarPorCliente(int $clienteId): array`**
-  * Muestra el historial de compras hechas por un cliente particular.
 * **`actualizarEstado(int $id, string $estado): bool`**
-  * Permite cambiar el estado de la orden (`pendiente`, `confirmado`, `entregado`, `cancelado`).

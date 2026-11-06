@@ -13,8 +13,9 @@ $error          = $error          ?? null;
 $emailIngresado = $emailIngresado ?? '';
 
 // Determinar qué modal abrir automáticamente
-$abrirModalLogin    = !empty($error) || ($flash && !$errorRegistro);
-$abrirModalRegistro = !empty($errorRegistro);
+$abrirModalRecuperar = (($_GET['modal'] ?? '') === 'recuperar');
+$abrirModalLogin    = (!$abrirModalRecuperar && (!empty($error) || ($flash && !$errorRegistro)));
+$abrirModalRegistro = (!$abrirModalRecuperar && !empty($errorRegistro));
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -152,23 +153,26 @@ $abrirModalRegistro = !empty($errorRegistro);
                     <input type="hidden" name="_action" value="login">
 
                     <div class="mb-3">
-                        <label for="email" class="form-label">Correo electrónico</label>
+                        <label for="email" class="form-label">Usuario o correo electrónico</label>
                         <div class="input-group">
                             <span class="input-group-text border-end-0">
-                                <i class="bi bi-envelope"></i>
+                                <i class="bi bi-person"></i>
                             </span>
-                            <input type="email"
+                            <input type="text"
                                    class="form-control border-start-0 ps-1"
                                    id="email"
                                    name="email"
-                                   placeholder="correo@ejemplo.com"
+                                   placeholder="ej. admin o correo@ejemplo.com"
                                    required
                                    value="<?= htmlspecialchars($emailIngresado) ?>">
                         </div>
                     </div>
 
                     <div class="mb-4">
-                        <label for="password" class="form-label">Contraseña</label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="password" class="form-label mb-0">Contraseña</label>
+                            <a href="#" class="small text-decoration-none text-muted" id="link-olvido-pass">¿Olvidaste tu contraseña?</a>
+                        </div>
                         <div class="input-group">
                             <span class="input-group-text border-end-0">
                                 <i class="bi bi-lock"></i>
@@ -204,6 +208,66 @@ $abrirModalRegistro = !empty($errorRegistro);
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /#modalLogin -->
+
+
+<!-- ============================================================
+     MODAL DE RECUPERACIÓN DE CONTRASEÑA (HU-30)
+     ============================================================ -->
+<div class="modal fade modal-login" id="modalRecuperar" tabindex="-1"
+     aria-labelledby="modalRecuperarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Header -->
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <div class="modal-logo">
+                    <i class="bi bi-key-fill"></i>
+                </div>
+                <h5 class="modal-title" id="modalRecuperarLabel">Restablecer Contraseña</h5>
+                <p class="modal-subtitle">Ingresa tu correo para recibir un enlace de recuperación</p>
+            </div>
+
+            <!-- Cuerpo -->
+            <div class="modal-body">
+                <form action="login.php?a=recuperar" method="POST" autocomplete="off">
+                    <div class="mb-4">
+                        <label for="recuperar_email" class="form-label">Correo electrónico registrado</label>
+                        <div class="input-group">
+                            <span class="input-group-text border-end-0">
+                                <i class="bi bi-envelope"></i>
+                            </span>
+                            <input type="email"
+                                   class="form-control border-start-0 ps-1"
+                                   id="recuperar_email"
+                                   name="email"
+                                   placeholder="correo@ejemplo.com"
+                                   required>
+                        </div>
+                        <small class="text-muted d-block mt-2">
+                            Te generaremos un enlace con vencimiento de 1 hora para crear tu nueva contraseña.
+                        </small>
+                    </div>
+
+                    <button type="submit" class="btn-modal-submit" id="btn-submit-recuperar">
+                        <i class="bi bi-send-check"></i> Enviar enlace de recuperación
+                    </button>
+                </form>
+
+                <p class="modal-switch-text mt-3">
+                    <a href="#" id="link-volver-login">
+                        <i class="bi bi-arrow-left"></i> Volver al inicio de sesión
+                    </a>
+                </p>
+
+                <p class="modal-footer-text">
+                    &copy; <?= date('Y') ?> San Gabriel — Todos los derechos reservados.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div><!-- /#modalRecuperar -->
 
 
 <!-- ============================================================
@@ -355,7 +419,9 @@ $abrirModalRegistro = !empty($errorRegistro);
 document.addEventListener('DOMContentLoaded', function () {
 
     // ── Reapertura automática de modal según contexto ──────────────────
-    <?php if ($abrirModalLogin): ?>
+    <?php if ($abrirModalRecuperar): ?>
+    new bootstrap.Modal(document.getElementById('modalRecuperar')).show();
+    <?php elseif ($abrirModalLogin): ?>
     new bootstrap.Modal(document.getElementById('modalLogin')).show();
     <?php elseif ($abrirModalRegistro): ?>
     new bootstrap.Modal(document.getElementById('modalRegistro')).show();
@@ -388,6 +454,24 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
         switchModal('modalRegistro', 'modalLogin');
     });
+
+    // Enlace "¿Olvidaste tu contraseña?" (dentro del modal login)
+    var linkOlvido = document.getElementById('link-olvido-pass');
+    if (linkOlvido) {
+        linkOlvido.addEventListener('click', function (e) {
+            e.preventDefault();
+            switchModal('modalLogin', 'modalRecuperar');
+        });
+    }
+
+    // Enlace "Volver al inicio de sesión" (dentro del modal recuperar)
+    var linkVolver = document.getElementById('link-volver-login');
+    if (linkVolver) {
+        linkVolver.addEventListener('click', function (e) {
+            e.preventDefault();
+            switchModal('modalRecuperar', 'modalLogin');
+        });
+    }
 
     // ── Validación de contraseñas coincidentes en tiempo real ──────────
     var pass1 = document.getElementById('reg_password');

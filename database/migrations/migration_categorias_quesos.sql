@@ -3,6 +3,10 @@
 -- Fecha: 2024
 -- Descripción: Agrega campos de categorización avanzada para
 --              mejorar la experiencia de compra en el e-commerce
+--
+-- EJECUTAR UNA SOLA VEZ.
+-- No reejecutar si las columnas ya existen: MySQL 8 no soporta
+-- ADD COLUMN IF NOT EXISTS y producirá error "Duplicate column name".
 -- ==============================================================
 
 USE `gabriel_lacteos`;

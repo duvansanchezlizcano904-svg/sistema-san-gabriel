@@ -74,7 +74,7 @@ class Pedido {
                  VALUES (:pedido_id, :producto_id, :cantidad, :precio_unitario, :subtotal)"
             );
             $stmtStock = $this->db->prepare(
-                "UPDATE productos SET cantidad = cantidad - :qty WHERE id = :id AND cantidad >= :qty"
+                "UPDATE productos SET cantidad = cantidad - :qty WHERE id = :id AND cantidad >= :min_qty"
             );
             foreach ($items as $item) {
                 $stmtD->execute([
@@ -84,7 +84,11 @@ class Pedido {
                     ':precio_unitario'=> $item['precio_unitario'],
                     ':subtotal'       => $item['subtotal'],
                 ]);
-                $stmtStock->execute([':qty' => $item['cantidad'], ':id' => $item['producto_id']]);
+                $stmtStock->execute([
+                    ':qty'     => $item['cantidad'],
+                    ':id'      => $item['producto_id'],
+                    ':min_qty' => $item['cantidad']
+                ]);
                 if ($stmtStock->rowCount() === 0) {
                     throw new Exception("No se pudo descontar stock de '{$item['nombre']}'.");
                 }

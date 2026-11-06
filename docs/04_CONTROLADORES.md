@@ -5,10 +5,13 @@ Este documento detalla los 11 controladores ubicados en la carpeta `controllers/
 ---
 
 ## 1. `controllers/AuthController.php`
-* **Propósito:** Maneja el ciclo de autenticación y cierre de sesión de usuarios.
+* **Propósito:** Maneja el ciclo de autenticación, registro, cierre de sesión y recuperación de contraseña.
 * **Acciones:**
-  * `login()`: Si el usuario ya está autenticado lo redirige al Dashboard o Catálogo. Si la petición es POST, valida campos requeridos, llama a `Usuario->autenticar()`, regenera el ID de sesión con `session_regenerate_id(true)` y guarda los datos en `$_SESSION`. Si la petición es GET, carga `views/login/login.php`.
-  * `logout()`: Destruye las variables de sesión, elimina la cookie de sesión del navegador (`setcookie`), destruye la sesión con `session_destroy()` y redirige a `login.php`.
+  * `login()`: Muestra el formulario o procesa credenciales. Usa `password_verify`, regenera ID de sesión y redirige según rol.
+  * `registro()`: Procesa el registro de nuevos clientes con validación de email único.
+  * `logout()`: Destruye sesión y redirige a login.
+  * `recuperar()`: Procesa la solicitud de recuperación de contraseña. Genera token de 32 bytes con `bin2hex(random_bytes(32))`, válida el email, guarda el token en la base de datos y envía el correo de recuperación usando PHPMailer.
+  * `restablecer()`: Muestra el formulario para nueva contraseña con token válido, valida que el token no haya expirado, procesa el cambio de contraseña.
 
 ---
 
@@ -104,7 +107,8 @@ Este documento detalla los 11 controladores ubicados en la carpeta `controllers/
 ---
 
 ## 11. `controllers/PublicoController.php`
-* **Propósito:** Acceso público para usuarios invitados sin requerir login previo.
+* **Propósito:** Acceso público para visitantes sin requerir sesión.
 * **Acciones:**
-  * `inicio()`: Renderiza la página de bienvenida (*landing page*) [views/inicio/home.php](file:///c:/laragon/www/php%20mi%20proyecto/views/inicio/home.php) con información de la quesería y catálogo destacado.
-  * `index()`: Renderiza el catálogo público general con buscador y filtros en `views/publico/catalogo.php`.
+  * `inicio()`: Página de bienvenida con información de la quesería y catálogo destacado.
+  * `index()`: Catálogo público con buscador y filtros avanzados (tipo, categoría, tipo de leche, intensidad).
+  * `cargarMasProductos()`: Endpoint AJAX para carga infinita. Devuelve JSON con HTML de productos, total, página actual y si hay más páginas.

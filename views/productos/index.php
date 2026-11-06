@@ -25,7 +25,7 @@ require_once __DIR__ . '/../layouts/header.php';
         <div class="col-12 col-md-5">
             <div class="input-group">
                 <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
-                <input type="text" name="q" class="form-control" placeholder="Buscar por código, nombre o descripción..." value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
+                <input type="text" name="q" id="buscadorProductos" class="form-control" placeholder="Buscar por código, nombre o descripción..." value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
             </div>
         </div>
 
@@ -64,7 +64,7 @@ require_once __DIR__ . '/../layouts/header.php';
 <!-- Tabla de Productos -->
 <div class="card-lacteo">
     <div class="table-responsive">
-        <table class="table table-lacteo align-middle">
+        <table class="table table-lacteo align-middle" id="tablaProductos">
             <thead>
                 <tr>
                     <th>Código</th>
@@ -129,10 +129,26 @@ require_once __DIR__ . '/../layouts/header.php';
                                     <a href="index.php?c=productos&a=editar&id=<?= $p['id'] ?>" class="btn btn-sm btn-outline-primary" title="Editar">
                                         <i class="bi bi-pencil"></i>
                                     </a>
+
+                                    <!-- Borrado lógico (Activar / Desactivar) -->
+                                    <form action="index.php?c=productos&a=cambiarEstado" method="POST" class="d-inline form-toggle-estado" data-nombre="<?= htmlspecialchars($p['nombre']) ?>" data-nuevo="<?= $p['estado'] === 'activo' ? 'inactivo' : 'activo' ?>">
+                                        <input type="hidden" name="id" value="<?= $p['id'] ?>">
+                                        <input type="hidden" name="estado" value="<?= $p['estado'] === 'activo' ? 'inactivo' : 'activo' ?>">
+                                        <?php if ($p['estado'] === 'activo'): ?>
+                                            <button type="submit" class="btn btn-sm btn-outline-warning" title="Desactivar (Borrado lógico)">
+                                                <i class="bi bi-eye-slash"></i>
+                                            </button>
+                                        <?php else: ?>
+                                            <button type="submit" class="btn btn-sm btn-outline-success" title="Reactivar producto">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        <?php endif; ?>
+                                    </form>
                                     
+                                    <!-- Borrado físico -->
                                     <form action="index.php?c=productos&a=eliminar" method="POST" class="d-inline form-eliminar-producto" data-nombre="<?= htmlspecialchars($p['nombre']) ?>">
                                         <input type="hidden" name="id" value="<?= $p['id'] ?>">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar permanentemente">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </form>
@@ -145,5 +161,130 @@ require_once __DIR__ . '/../layouts/header.php';
         </table>
     </div>
 </div>
+
+<!-- Paginación Profesional -->
+<?php if (isset($totalPaginas) && $totalPaginas > 1): ?>
+<nav class="lacteo-pagination-wrapper mt-4" aria-label="Navegación de productos">
+    <ul class="lacteo-pagination justify-content-center justify-content-md-between">
+        <div class="d-none d-md-block">
+            <li class="page-item disabled">
+                <span class="page-link">
+                    Mostrando <?= (($pagina - 1) * $porPagina) + 1 ?> - <?= min($pagina * $porPagina, $totalProductos) ?> 
+                    de <?= $totalProductos ?> productos
+                </span>
+            </li>
+        </div>
+        
+        <div class="d-flex gap-1">
+            <!-- Botón Anterior -->
+            <li class="page-item <?= $pagina <= 1 ? 'disabled' : '' ?>">
+                <a class="page-link" href="?c=productos&pagina=<?= $pagina - 1 ?><?= !empty($busqueda) ? '&q=' . urlencode($busqueda) : '' ?><?= !empty($tipo) ? '&tipo=' . urlencode($tipo) : '' ?><?= !empty($estado) ? '&estado=' . urlencode($estado) : '' ?>" tabindex="-1">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            </li>
+            
+            <!-- Primera página -->
+            <?php if ($pagina > 3): ?>
+            <li class="page-item">
+                <a class="page-link" href="?c=productos&pagina=1<?= !empty($busqueda) ? '&q=' . urlencode($busqueda) : '' ?><?= !empty($tipo) ? '&tipo=' . urlencode($tipo) : '' ?><?= !empty($estado) ? '&estado=' . urlencode($estado) : '' ?>">1</a>
+            </li>
+            <?php if ($pagina > 4): ?>
+            <li class="page-item disabled"><span class="page-link">...</span></li>
+            <?php endif; ?>
+            <?php endif; ?>
+            
+            <!-- Páginas del medio -->
+            <?php
+            $inicioPag = max(1, $pagina - 2);
+            $finPag = min($totalPaginas, $pagina + 2);
+            
+            if ($pagina <= 3) {
+                $finPag = min($totalPaginas, 5);
+            }
+            if ($pagina >= $totalPaginas - 2) {
+                $inicioPag = max(1, $totalPaginas - 4);
+            }
+            
+            for ($i = $inicioPag; $i <= $finPag; $i++):
+            ?>
+            <li class="page-item <?= $pagina == $i ? 'active' : '' ?>">
+                <a class="page-link" href="?c=productos&pagina=<?= $i ?><?= !empty($busqueda) ? '&q=' . urlencode($busqueda) : '' ?><?= !empty($tipo) ? '&tipo=' . urlencode($tipo) : '' ?><?= !empty($estado) ? '&estado=' . urlencode($estado) : '' ?>"><?= $i ?></a>
+            </li>
+            <?php endfor; ?>
+            
+            <!-- Última página -->
+            <?php if ($pagina < $totalPaginas - 2): ?>
+            <?php if ($pagina < $totalPaginas - 3): ?>
+            <li class="page-item disabled"><span class="page-link">...</span></li>
+            <?php endif; ?>
+            <li class="page-item">
+                <a class="page-link" href="?c=productos&pagina=<?= $totalPaginas ?><?= !empty($busqueda) ? '&q=' . urlencode($busqueda) : '' ?><?= !empty($tipo) ? '&tipo=' . urlencode($tipo) : '' ?><?= !empty($estado) ? '&estado=' . urlencode($estado) : '' ?>"><?= $totalPaginas ?></a>
+            </li>
+            <?php endif; ?>
+            
+            <!-- Botón Siguiente -->
+            <li class="page-item <?= $pagina >= $totalPaginas ? 'disabled' : '' ?>">
+                <a class="page-link" href="?c=productos&pagina=<?= $pagina + 1 ?><?= !empty($busqueda) ? '&q=' . urlencode($busqueda) : '' ?><?= !empty($tipo) ? '&tipo=' . urlencode($tipo) : '' ?><?= !empty($estado) ? '&estado=' . urlencode($estado) : '' ?>">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+        </div>
+    </ul>
+</nav>
+
+<!-- Info de paginación para móvil -->
+<div class="text-center d-md-none mt-2">
+    <small class="text-muted">
+        <?= (($pagina - 1) * $porPagina) + 1 ?>-<?= min($pagina * $porPagina, $totalProductos) ?> de <?= $totalProductos ?>
+    </small>
+</div>
+<?php endif; ?>
+
+<!-- Script para Búsqueda en Tiempo Real y Confirmaciones HU-05 y HU-07 -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // 1. Confirmación de cambio de estado (borrado lógico)
+    document.querySelectorAll('.form-toggle-estado').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const nombre = this.getAttribute('data-nombre') || 'este producto';
+            const nuevo = this.getAttribute('data-nuevo');
+            const accion = (nuevo === 'inactivo') ? 'desactivar (ocultar de ventas)' : 'reactivar';
+            if (confirm(`¿Deseas ${accion} el producto "${nombre}"?`)) {
+                this.submit();
+            }
+        });
+    });
+
+    // 2. Buscador en tiempo real por texto (filtro instantáneo en la tabla)
+    const buscador = document.getElementById('buscadorProductos');
+    const tabla = document.getElementById('tablaProductos');
+    if (buscador && tabla) {
+        const filas = tabla.querySelectorAll('tbody tr');
+        let debounceTimer;
+
+        buscador.addEventListener('input', function () {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                const query = buscador.value.trim().toLowerCase();
+                let visibles = 0;
+
+                filas.forEach(fila => {
+                    // Si es la fila de mensaje vacío, ignorar
+                    if (fila.querySelector('td[colspan]')) return;
+
+                    const texto = fila.textContent.toLowerCase();
+                    if (query === '' || texto.includes(query)) {
+                        fila.style.display = '';
+                        visibles++;
+                    } else {
+                        fila.style.display = 'none';
+                    }
+                });
+            }, 150);
+        });
+    }
+});
+</script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

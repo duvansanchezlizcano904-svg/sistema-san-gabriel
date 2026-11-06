@@ -21,8 +21,13 @@ class Proveedor {
         $params = [];
 
         if (!empty($busqueda)) {
-            $sql .= " AND (nombre LIKE :busqueda OR contacto LIKE :busqueda OR telefono LIKE :busqueda OR email LIKE :busqueda OR nit LIKE :busqueda)";
-            $params[':busqueda'] = '%' . $busqueda . '%';
+            $sql .= " AND (nombre LIKE :b1 OR contacto LIKE :b2 OR telefono LIKE :b3 OR email LIKE :b4 OR nit LIKE :b5)";
+            $b = '%' . $busqueda . '%';
+            $params[':b1'] = $b;
+            $params[':b2'] = $b;
+            $params[':b3'] = $b;
+            $params[':b4'] = $b;
+            $params[':b5'] = $b;
         }
 
         if (!empty($estado)) {

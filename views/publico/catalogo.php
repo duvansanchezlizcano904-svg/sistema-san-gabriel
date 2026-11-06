@@ -281,119 +281,11 @@
         <?php else: ?>
             <div class="pub-cards-grid">
                 <?php
-                // Imágenes por tipo de queso (Unsplash, sin costo, formato seguro)
-                $imagenesPorTipo = [
-                    'Queso Fresco'        => 'https://images.unsplash.com/photo-1618164436241-4473940d1f5c?w=600&q=80',
-                    'Queso Duro / Salado' => 'https://images.unsplash.com/photo-1631379578550-7038263db699?w=600&q=80',
-                    'Queso Semigraso'     => 'https://images.unsplash.com/photo-1552767059-ce182ead6c1b?w=600&q=80',
-                    'Queso Hilado'        => 'https://images.unsplash.com/photo-1571748982800-fa51082c2224?w=600&q=80',
-                    'Cuajada'             => 'https://images.unsplash.com/photo-1559561853-08451507cbe7?w=600&q=80',
-                    'Queso Maduro'        => 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a318?w=600&q=80',
-                ];
-                $imgDefault = 'https://images.unsplash.com/photo-1452195100486-9cc805987862?w=600&q=80';
-
+                $modo = 'publico';
                 foreach ($quesos as $q):
-                    $disponible = (int)$q['cantidad'] > 0;
-                    $imgUrl     = $imagenesPorTipo[$q['tipo']] ?? $imgDefault;
-                    
-                    // Información adicional de categorización
-                    $categoria      = $q['categoria'] ?? $q['tipo'];
-                    $tipoLeche      = $q['tipo_leche'] ?? 'Vaca';
-                    $intensidad     = $q['intensidad_sabor'] ?? 'medio';
-                    $presentacion   = $q['peso_presentacion'] ?? $q['unidad_medida'];
+                    require __DIR__ . '/../partials/tarjeta_producto.php';
+                endforeach;
                 ?>
-                <div class="pub-card <?= !$disponible ? 'pub-card--agotado' : '' ?>">
-
-                    <!-- Imagen -->
-                    <div class="pub-card-img-wrap">
-                        <img src="<?= $imgUrl ?>"
-                             alt="<?= htmlspecialchars($q['nombre']) ?>"
-                             class="pub-card-img"
-                             loading="lazy">
-                        <!-- Badge disponibilidad -->
-                        <span class="pub-card-status <?= $disponible ? 'pub-card-status--ok' : 'pub-card-status--off' ?>">
-                            <?php if ($disponible): ?>
-                                <i class="bi bi-check-circle-fill me-1"></i>Disponible
-                            <?php else: ?>
-                                <i class="bi bi-x-circle-fill me-1"></i>Agotado
-                            <?php endif; ?>
-                        </span>
-                        <!-- Categoría principal -->
-                        <span class="pub-card-categoria"><?= htmlspecialchars($categoria) ?></span>
-                    </div>
-
-                    <!-- Cuerpo -->
-                    <div class="pub-card-body">
-                        <div class="pub-card-codigo"><?= htmlspecialchars($q['codigo']) ?></div>
-                        <h3 class="pub-card-nombre"><?= htmlspecialchars($q['nombre']) ?></h3>
-                        <p class="pub-card-desc">
-                            <?= htmlspecialchars($q['descripcion'] ?? 'Queso artesanal elaborado con leche fresca de la región.') ?>
-                        </p>
-                        
-                        <!-- Etiquetas de características -->
-                        <div class="pub-card-tags">
-                            <span class="pub-card-tag pub-card-tag-leche">
-                                <i class="bi bi-droplet-fill me-1"></i><?= htmlspecialchars($tipoLeche) ?>
-                            </span>
-                            <span class="pub-card-tag pub-card-tag-intensidad pub-card-tag-intensidad-<?= $intensidad ?>">
-                                <i class="bi bi-fire me-1"></i><?= ucfirst($intensidad) ?>
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- Footer -->
-                    <div class="pub-card-foot">
-                        <div class="pub-card-precio-wrap">
-                            <span class="pub-card-unidad"><?= htmlspecialchars($presentacion) ?></span>
-                            <span class="pub-card-precio"><?= formatearMoneda($q['precio_venta']) ?></span>
-                        </div>
-
-                        <div class="pub-card-actions">
-                            <!-- Botón "Ver producto" siempre visible -->
-                            <button type="button"
-                                    class="pub-btn-ver"
-                                    onclick="abrirModal(<?= htmlspecialchars(json_encode([
-                                        'nombre'      => $q['nombre'],
-                                        'tipo'        => $q['tipo'],
-                                        'categoria'   => $categoria,
-                                        'tipo_leche'  => $tipoLeche,
-                                        'intensidad'  => ucfirst($intensidad),
-                                        'descripcion' => $q['descripcion'] ?? 'Queso artesanal elaborado con leche fresca.',
-                                        'precio'      => formatearMoneda($q['precio_venta']),
-                                        'unidad'      => $presentacion,
-                                        'codigo'      => $q['codigo'],
-                                        'disponible'  => $disponible,
-                                        'imagen'      => $imgUrl,
-                                        'id'          => $q['id'],
-                                        'origen'      => $q['origen'] ?? 'Nacional',
-                                        'maduracion'  => $q['tiempo_maduracion'] ?? 'N/A',
-                                    ])) ?>)">
-                                <i class="bi bi-eye me-1"></i>Ver producto
-                            </button>
-
-                            <?php if ($disponible): ?>
-                                <?php
-                                // Construir URL de redirect conservando filtros
-                                $filtrosPermitidos = ['q' => '', 'tipo' => '', 'categoria' => '', 'tipo_leche' => '', 'intensidad' => ''];
-                                $filtrosActivos = array_intersect_key($_GET, $filtrosPermitidos);
-                                $queryString = !empty($filtrosActivos) ? '?' . http_build_query($filtrosActivos) : '';
-                                $urlRedirect = 'publico.php' . $queryString . '#productos';
-                                ?>
-                                
-                                <form method="POST" action="index.php?c=carrito&a=agregar">
-                                    <input type="hidden" name="producto_id" value="<?= $q['id'] ?>">
-                                    <input type="hidden" name="cantidad" value="1">
-                                    <input type="hidden" name="redirect" value="<?= htmlspecialchars($urlRedirect) ?>">
-                                    <button type="submit" class="pub-btn-agregar" title="<?= $estaAutenticado ? 'Agregar al carrito' : 'Agregar al carrito (sin necesidad de iniciar sesión)' ?>">
-                                        <i class="bi bi-cart-plus"></i>
-                                    </button>
-                                </form>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-
-                </div>
-                <?php endforeach; ?>
             </div>
         <?php endif; ?>
 
@@ -636,7 +528,7 @@ function abrirModal(p) {
     const redirectUrl = 'publico.php' + (queryString ? '?' + queryString : '') + '#productos';
 
     if (p.disponible && !esAdmin) {
-        // Ahora permitimos agregar tanto autenticados como visitantes
+        // Permitir agregar al carrito
         accionEl.innerHTML = `
             <form method="POST" action="index.php?c=carrito&a=agregar">
                 <input type="hidden" name="producto_id" value="${p.id}">

@@ -3,18 +3,8 @@
  * Quesos San Gabriel — Página de Inicio
  * Vista principal: muestra los productos sin requerir autenticación.
  */
-
-// Mapa de imágenes Unsplash por tipo de queso
-$imagenesPorTipo = [
-    'Queso Fresco'        => 'https://images.unsplash.com/photo-1618164436241-4473940d1f5c?w=600&q=80',
-    'Queso Duro / Salado' => 'https://images.unsplash.com/photo-1631379578550-7038263db699?w=600&q=80',
-    'Queso Semigraso'     => 'https://images.unsplash.com/photo-1552767059-ce182ead6c1b?w=600&q=80',
-    'Queso Hilado'        => 'https://images.unsplash.com/photo-1571748982800-fa51082c2224?w=600&q=80',
-    'Cuajada'             => 'https://images.unsplash.com/photo-1559561853-08451507cbe7?w=600&q=80',
-    'Queso Maduro'        => 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a318?w=600&q=80',
-];
-$imgDefault = 'https://images.unsplash.com/photo-1452195100486-9cc805987862?w=600&q=80';
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -68,11 +58,11 @@ $imgDefault = 'https://images.unsplash.com/photo-1452195100486-9cc805987862?w=60
                         </span>
                     </li>
                     <li>
-                        <button type="button" class="home-nav-cart-btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCarrito" id="nav-cart-btn">
+                        <a href="index.php?c=carrito" class="home-nav-cart-btn" id="nav-cart-btn" style="text-decoration:none;">
                             <i class="bi bi-cart3"></i>
                             <span>Carrito</span>
                             <span class="badge bg-warning text-dark ms-1" id="nav-cart-count"><?= (int)$carritoTotal ?></span>
-                        </button>
+                        </a>
                     </li>
                     <li>
                         <a href="logout.php" class="home-nav-link text-danger" id="nav-cerrar">
@@ -82,7 +72,7 @@ $imgDefault = 'https://images.unsplash.com/photo-1452195100486-9cc805987862?w=60
                 <?php elseif ($estaAutenticado && $esAdmin): ?>
                     <!-- Administrador -->
                     <li>
-                        <a href="index.php?c=dashboard" class="home-nav-btn" style="background:#2563eb;" id="nav-admin">
+                        <a href="index.php?c=dashboard" class="home-nav-btn" style="background:#2563eb; text-decoration:none;" id="nav-admin">
                             <i class="bi bi-speedometer2 me-1"></i>Panel Admin
                         </a>
                     </li>
@@ -92,13 +82,11 @@ $imgDefault = 'https://images.unsplash.com/photo-1452195100486-9cc805987862?w=60
                 <?php else: ?>
                     <!-- Visitante no autenticado -->
                     <li>
-                        <button type="button" class="home-nav-cart-btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCarrito" id="nav-cart-btn-guest">
+                        <a href="index.php?c=carrito" class="home-nav-cart-btn" id="nav-cart-btn-guest" style="text-decoration:none;">
                             <i class="bi bi-cart3"></i>
                             <span>Carrito</span>
-                            <?php if ($carritoTotal > 0): ?>
-                                <span class="badge bg-warning text-dark ms-1"><?= (int)$carritoTotal ?></span>
-                            <?php endif; ?>
-                        </button>
+                            <span class="badge bg-warning text-dark ms-1" id="nav-cart-count"><?= (int)$carritoTotal ?></span>
+                        </a>
                     </li>
                     <li>
                         <button type="button" class="home-nav-btn" data-bs-toggle="modal" data-bs-target="#modalLogin" id="nav-login">
@@ -127,8 +115,8 @@ $imgDefault = 'https://images.unsplash.com/photo-1452195100486-9cc805987862?w=60
             <a href="#productos" id="mob-productos"><i class="bi bi-grid me-2"></i>Productos</a>
             <a href="#nosotros" id="mob-nosotros"><i class="bi bi-info-circle me-2"></i>Nosotros</a>
             
-            <a href="#" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCarrito" id="mob-carrito">
-                <i class="bi bi-cart3 me-2"></i>Carrito (<?= $carritoTotal ?>)
+            <a href="index.php?c=carrito" id="mob-carrito">
+                <i class="bi bi-cart3 me-2"></i>Carrito (<span id="mob-cart-count"><?= $carritoTotal ?></span>)
             </a>
 
             <hr class="home-mobile-hr">
@@ -241,97 +229,188 @@ $imgDefault = 'https://images.unsplash.com/photo-1452195100486-9cc805987862?w=60
 
 
 <!-- =============================================
-     SECCIÓN PRODUCTOS
+     SECCIÓN CATÁLOGO SHOWCASE PROFESIONAL
      ============================================= -->
 <section class="home-productos" id="productos">
     <div class="home-container">
 
-        <!-- Encabezado -->
-        <div class="home-sec-head">
-            <div class="home-sec-kicker">Catálogo</div>
-            <h2 class="home-sec-title">Nuestros Productos</h2>
-            <p class="home-sec-sub">
-                Quesos frescos, hilados y madurados — tradición y calidad en cada presentación
-            </p>
-        </div>
+        <div class="catalogo-section">
+            <!-- Encabezado del catálogo -->
+            <div class="catalogo-header">
+                <div class="catalogo-header-left">
+                    <div class="catalogo-eyebrow">
+                        <i class="bi bi-grid-3x3-gap-fill me-2"></i>Inventario Completo
+                    </div>
+                    <h2 class="catalogo-title">
+                        Catálogo de <span class="catalogo-title-quesos">Quesos</span> <span class="catalogo-title-artesanales">Artesanales</span>
+                    </h2>
+                    <p class="catalogo-subtitle">Colección completa de variedades disponibles en Quesos San Gabriel</p>
+                </div>
+            </div>
 
-        <!-- Grid de tarjetas -->
-        <div class="home-cards-grid" id="home-cards-grid">
-            <?php foreach ($quesos as $q):
-                $disponible = (int)($q['cantidad'] ?? 1) > 0;
-                $imgUrl     = $imagenesPorTipo[$q['tipo']] ?? $imgDefault;
-                $precio     = '$ ' . number_format((float)$q['precio_venta'], 0, ',', '.');
+            <!-- Filtros rápidos por categoría -->
+            <?php
+            $categoriasLista = [];
+            foreach ($quesos as $cp) {
+                $c = trim($cp['categoria'] ?? '');
+                if ($c && !in_array($c, $categoriasLista)) {
+                    $categoriasLista[] = $c;
+                }
+            }
+            sort($categoriasLista);
             ?>
-            <article class="home-card <?= !$disponible ? 'home-card--agotado' : '' ?>" id="card-<?= htmlspecialchars($q['codigo']) ?>">
+            <div class="catalogo-filtros" id="catalogo-filtros">
+                <button type="button" class="filtro-btn active" data-cat="all">
+                    <i class="bi bi-grid-fill me-2"></i>Todos (<?= count($quesos) ?>)
+                </button>
+                <?php foreach ($categoriasLista as $cat): ?>
+                    <?php
+                    $cnt = count(array_filter($quesos, fn($p) => trim($p['categoria'] ?? '') === $cat));
+                    ?>
+                    <button type="button" class="filtro-btn" data-cat="<?= htmlspecialchars($cat) ?>">
+                        <?= htmlspecialchars(ucfirst($cat)) ?> (<?= $cnt ?>)
+                    </button>
+                <?php endforeach; ?>
+            </div>
 
-                <!-- Imagen -->
-                <div class="home-card-img-wrap">
-                    <img src="<?= $imgUrl ?>"
-                         alt="<?= htmlspecialchars($q['nombre']) ?>"
-                         class="home-card-img"
-                         loading="lazy">
-                    <span class="home-card-status <?= $disponible ? 'home-card-status--ok' : 'home-card-status--off' ?>">
-                        <?php if ($disponible): ?>
-                            <i class="bi bi-check-circle-fill me-1"></i>Disponible
-                        <?php else: ?>
-                            <i class="bi bi-x-circle-fill me-1"></i>Agotado
-                        <?php endif; ?>
-                    </span>
-                    <span class="home-card-tipo"><?= htmlspecialchars($q['tipo']) ?></span>
-                </div>
-
-                <!-- Cuerpo -->
-                <div class="home-card-body">
-                    <div class="home-card-codigo"><?= htmlspecialchars($q['codigo']) ?></div>
-                    <h3 class="home-card-nombre"><?= htmlspecialchars($q['nombre']) ?></h3>
-                    <p class="home-card-desc">
-                        <?= htmlspecialchars($q['descripcion'] ?? 'Queso artesanal elaborado con leche fresca de la región.') ?>
-                    </p>
-                </div>
-
-                <!-- Footer -->
-                <div class="home-card-foot">
-                    <div class="home-card-precio-wrap">
-                        <span class="home-card-unidad"><?= htmlspecialchars($q['unidad_medida']) ?></span>
-                        <span class="home-card-precio"><?= $precio ?></span>
+            <!-- Grid de tarjetas de quesos -->
+            <div class="catalogo-grid" id="catalogo-grid">
+                <?php if (empty($quesos)): ?>
+                    <div class="catalogo-empty text-center py-5 text-white">
+                        <i class="bi bi-emoji-frown fs-1 text-warning d-block mb-3"></i>
+                        <p class="fs-5">No hay productos activos en el catálogo.</p>
                     </div>
-                    <div class="home-card-actions">
-                        <?php if ($disponible): 
-                            $maxStock = max(1, (int)($q['cantidad'] ?? 99));
-                        ?>
-                            <form method="POST" action="index.php?c=carrito&a=agregar" class="home-buy-form">
-                                <input type="hidden" name="producto_id" value="<?= (int)$q['id'] ?>">
-                                <input type="hidden" name="redirect" value="index.php?open_cart=1#productos">
-                                
-                                <div class="home-qty-picker" title="Selecciona la cantidad deseada">
-                                    <button type="button" class="home-qty-btn" onclick="cambiarCantidad(this, -1)">-</button>
-                                    <input type="number" name="cantidad" class="home-qty-input" value="1" min="1" max="<?= $maxStock ?>" readonly>
-                                    <button type="button" class="home-qty-btn" onclick="cambiarCantidad(this, 1, <?= $maxStock ?>)">+</button>
+                <?php else: ?>
+                    <?php foreach ($quesos as $prod):
+                        $imgSrc      = resolverImagenProducto($prod);
+                        $cat         = trim($prod['categoria'] ?? 'Sin categoría');
+                        $cantidad    = (int)($prod['cantidad'] ?? 0);
+                        $minStock    = (int)($prod['stock_minimo'] ?? 0);
+                        $agotado     = $cantidad === 0;
+                        $stockBajo   = !$agotado && $cantidad <= $minStock;
+                        $precio      = isset($prod['precio_venta']) ? formatearMoneda($prod['precio_venta']) : '—';
+                        $unidad      = $prod['unidad_medida'] ?? 'Unidad';
+                        $presentacion = $prod['peso_presentacion'] ?? '';
+                        $tipo        = strtoupper(trim($prod['tipo'] ?? 'QUESO'));
+                        $intensidad  = trim($prod['intensidad_sabor'] ?? '');
+                        $origen      = strtoupper(trim($prod['origen'] ?? ''));
+                        $subtitulo   = $tipo . ($origen ? " · {$origen}" : '');
+                        $descripcion = substr($prod['descripcion'] ?? '', 0, 95);
+                        if (strlen($prod['descripcion'] ?? '') > 95) $descripcion .= '…';
+                        $codigo      = $prod['codigo'] ?? '';
+                        $nombre      = $prod['nombre'] ?? '';
+                        $id          = (int)($prod['id'] ?? 0);
+                        $esPlaceholder = str_contains($imgSrc, 'placeholder-queso') || str_contains($imgSrc, 'lac-1000');
+                    ?>
+                    <div class="queso-card" data-cat="<?= htmlspecialchars($cat) ?>" id="card-<?= htmlspecialchars($codigo) ?>">
+                        <!-- Imagen con nombre flotante y badges -->
+                        <div class="queso-card-img-wrap">
+                            <img
+                                src="<?= htmlspecialchars($imgSrc) ?>"
+                                alt="<?= htmlspecialchars($nombre) ?>"
+                                class="queso-card-img <?= $esPlaceholder ? 'queso-card-img--contain' : '' ?>"
+                                loading="lazy"
+                                onerror="this.src='public/img/placeholder-queso.png'"
+                            >
+                            <!-- Badges superiores -->
+                            <div class="queso-badges-top">
+                                <span class="cat-badge"><?= htmlspecialchars(strtoupper($cat)) ?></span>
+                                <?php if ($agotado): ?>
+                                    <span class="stock-badge agotado"><i class="bi bi-x-circle-fill"></i>Agotado</span>
+                                <?php elseif ($stockBajo): ?>
+                                    <span class="stock-badge bajo"><i class="bi bi-exclamation-triangle-fill"></i>Bajo</span>
+                                <?php else: ?>
+                                    <span class="stock-badge ok"><i class="bi bi-check-circle-fill"></i>Stock OK</span>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Nombre flotante sobre imagen -->
+                            <div class="queso-img-label">
+                                <div class="queso-img-nombre"><?= htmlspecialchars($nombre) ?></div>
+                                <div class="queso-img-tipo"><?= htmlspecialchars($subtitulo) ?></div>
+                            </div>
+
+                            <!-- Overlay hover con acciones -->
+                            <div class="queso-card-overlay">
+                                <?php if ($esAdmin): ?>
+                                    <a href="index.php?c=productos&a=editar&id=<?= $id ?>" class="overlay-btn">
+                                        <i class="bi bi-pencil-fill"></i>Editar
+                                    </a>
+                                    <a href="index.php?c=ventas" class="overlay-btn overlay-btn-gold">
+                                        <i class="bi bi-cart-plus-fill"></i>Vender
+                                    </a>
+                                <?php else: ?>
+                                    <?php if (!$agotado && $id > 0): ?>
+                                        <button type="button" class="overlay-btn"
+                                                onclick="agregarDirecto(<?= $id ?>, '<?= htmlspecialchars(addslashes($nombre)) ?>')">
+                                            <i class="bi bi-cart-plus-fill"></i>Agregar
+                                        </button>
+                                        <button type="button" class="overlay-btn overlay-btn-gold"
+                                            onclick="abrirModalHome(<?= htmlspecialchars(json_encode([
+                                                'id'          => $id,
+                                                'nombre'      => $nombre,
+                                                'imagen'      => $imgSrc,
+                                                'categoria'   => $cat,
+                                                'tipo'        => $tipo,
+                                                'codigo'      => $codigo,
+                                                'descripcion' => $prod['descripcion'] ?? '',
+                                                'tipo_leche'  => $prod['tipo_leche'] ?? 'Vaca',
+                                                'intensidad'  => $intensidad,
+                                                'maduracion'  => $prod['tiempo_maduracion'] ?? '',
+                                                'origen'      => $prod['origen'] ?? '',
+                                                'unidad'      => $unidad,
+                                                'precio'      => $precio,
+                                                'disponible'  => !$agotado,
+                                            ]), ENT_QUOTES, 'UTF-8') ?>)">
+                                            <i class="bi bi-eye-fill"></i>Detalle
+                                        </button>
+                                    <?php else: ?>
+                                        <span class="overlay-btn overlay-btn-disabled">
+                                            <i class="bi bi-slash-circle"></i>Agotado
+                                        </span>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+                        <!-- Info inferior -->
+                        <div class="queso-card-body">
+                            <?php if ($descripcion): ?>
+                                <p class="queso-card-desc"><?= htmlspecialchars($descripcion) ?></p>
+                            <?php endif; ?>
+                            <div class="queso-card-detalles">
+                                <?php if ($intensidad): ?>
+                                <div class="detalle-item">
+                                    <i class="bi <?= (strtolower($intensidad) === 'muy fuerte' || strtolower($intensidad) === 'fuerte') ? 'bi-fire text-danger' : 'bi-thermometer-half text-warning' ?>"></i>
+                                    <span><?= htmlspecialchars(ucfirst($intensidad)) ?></span>
                                 </div>
-
-                                <button type="submit" class="home-btn-comprar" title="Añadir cantidad al carrito"
-                                        id="agregar-<?= htmlspecialchars($q['codigo']) ?>">
-                                    <i class="bi bi-cart-plus me-1"></i> Comprar
-                                </button>
-                            </form>
-                        <?php else: ?>
-                            <button class="home-btn-agregar home-btn-agregar--lock" disabled title="Producto Agotado">
-                                <i class="bi bi-x-circle"></i>
-                            </button>
-                        <?php endif; ?>
+                                <?php endif; ?>
+                                <div class="detalle-item">
+                                    <i class="bi bi-archive text-primary"></i>
+                                    <span><?= number_format($cantidad) ?> <?= htmlspecialchars($presentacion ?: $unidad) ?></span>
+                                </div>
+                            </div>
+                            <div class="queso-card-footer">
+                                <div class="queso-precio">
+                                    <span class="precio-label">Precio venta</span>
+                                    <span class="precio-valor"><?= $precio ?></span>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <?php if (!$esAdmin && !$agotado && $id > 0): ?>
+                                    <button type="button" class="btn-card-quick-cart"
+                                            onclick="agregarDirecto(<?= $id ?>, '<?= htmlspecialchars(addslashes($nombre)) ?>')"
+                                            title="Agregar al carrito">
+                                        <i class="bi bi-cart-plus"></i>
+                                    </button>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-
-            </article>
-            <?php endforeach; ?>
-        </div>
-
-        <!-- CTA ver catálogo completo -->
-        <div class="home-sec-cta">
-            <a href="publico.php" class="home-cta-catalog" id="cta-catalogo-completo">
-                <i class="bi bi-grid-3x3-gap me-2"></i>Ver catálogo completo
-            </a>
-        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div><!-- /catalogo-grid -->
+        </div><!-- /catalogo-section -->
 
     </div>
 </section>
@@ -535,12 +614,23 @@ $imgDefault = 'https://images.unsplash.com/photo-1452195100486-9cc805987862?w=60
 </div>
 
 <!-- Botón Flotante de Carrito -->
-<?php if ($carritoTotal > 0): ?>
-<button class="home-floating-cart" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCarrito" id="floatingCartBtn" title="Ver Carrito y Facturación">
+<a href="index.php?c=carrito" class="home-floating-cart <?= $carritoTotal > 0 ? '' : 'd-none' ?>" id="floatingCartBtn" title="Ver Carrito de Compras">
     <i class="bi bi-cart3"></i>
-    <span class="floating-cart-badge"><?= $carritoTotal ?></span>
-</button>
-<?php endif; ?>
+    <span class="floating-cart-badge" id="floating-cart-count"><?= $carritoTotal ?></span>
+</a>
+
+<!-- Toast Flotante de Confirmación de Carrito -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1090;">
+    <div id="homeCartToast" class="toast align-items-center text-bg-dark border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body d-flex align-items-center gap-2" id="homeToastMessage">
+                <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                <span>Producto agregado al carrito.</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+        </div>
+    </div>
+</div>
 
 <!-- ============================================================
      MODAL DE LOGIN (SEGUNDA IMAGEN DIRECTA)
@@ -757,20 +847,136 @@ if (hamburger && mobileNav) {
     });
 }
 
-/* ── Animación de entrada para las tarjetas (Intersection Observer) ── */
-const cards = document.querySelectorAll('.home-card');
-if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver((entries) => {
-        entries.forEach((entry, i) => {
-            if (entry.isIntersecting) {
-                entry.target.style.transitionDelay = (i * 0.06) + 's';
-                entry.target.classList.add('home-card--visible');
-                io.unobserve(entry.target);
+/* ── Barra de desplazamiento y navegación horizontal (home) ── */
+const scrollContainer = document.getElementById('home-cards-scroll-container');
+const btnScrollLeft   = document.getElementById('btn-scroll-left');
+const btnScrollRight  = document.getElementById('btn-scroll-right');
+const btnToggleGrid   = document.getElementById('btn-toggle-grid');
+const iconToggleGrid  = document.getElementById('icon-toggle-grid');
+const textToggleGrid  = document.getElementById('text-toggle-grid');
+const progressIndicator = document.getElementById('home-scroll-progress-indicator');
+const visibleCounter  = document.getElementById('visible-products-count');
+
+function actualizarScrollStatus() {
+    if (!scrollContainer) return;
+    const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+    const current = scrollContainer.scrollLeft;
+
+    if (btnScrollLeft) {
+        btnScrollLeft.disabled = current <= 5;
+    }
+    if (btnScrollRight) {
+        btnScrollRight.disabled = maxScroll <= 0 || current >= maxScroll - 5;
+    }
+    if (progressIndicator) {
+        if (maxScroll <= 0) {
+            progressIndicator.style.width = '100%';
+        } else {
+            const pct = Math.min(100, Math.max(12, ((current + scrollContainer.clientWidth) / scrollContainer.scrollWidth) * 100));
+            progressIndicator.style.width = pct + '%';
+        }
+    }
+}
+
+if (scrollContainer) {
+    scrollContainer.addEventListener('scroll', actualizarScrollStatus, { passive: true });
+    window.addEventListener('resize', actualizarScrollStatus);
+    setTimeout(actualizarScrollStatus, 150);
+
+    // Botones de desplazamiento
+    if (btnScrollLeft) {
+        btnScrollLeft.addEventListener('click', () => {
+            const scrollAmount = Math.max(280, scrollContainer.clientWidth * 0.75);
+            scrollContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        });
+    }
+    if (btnScrollRight) {
+        btnScrollRight.addEventListener('click', () => {
+            const scrollAmount = Math.max(280, scrollContainer.clientWidth * 0.75);
+            scrollContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        });
+    }
+
+    // Arrastre con el mouse
+    let isMouseDown = false;
+    let startX, startScrollLeft;
+
+    scrollContainer.addEventListener('mousedown', (e) => {
+        if (e.target.closest('button, a, input, form')) return;
+        isMouseDown = true;
+        scrollContainer.style.cursor = 'grabbing';
+        scrollContainer.style.userSelect = 'none';
+        startX = e.pageX - scrollContainer.offsetLeft;
+        startScrollLeft = scrollContainer.scrollLeft;
+    });
+
+    window.addEventListener('mouseup', () => {
+        if (isMouseDown) {
+            isMouseDown = false;
+            if (scrollContainer) {
+                scrollContainer.style.cursor = '';
+                scrollContainer.style.removeProperty('user-select');
+            }
+        }
+    });
+
+    scrollContainer.addEventListener('mousemove', (e) => {
+        if (!isMouseDown) return;
+        e.preventDefault();
+        const x = e.pageX - scrollContainer.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        scrollContainer.scrollLeft = startScrollLeft - walk;
+    });
+
+    // Alternar entre modo desplazamiento y cuadrícula completa
+    if (btnToggleGrid) {
+        btnToggleGrid.addEventListener('click', () => {
+            const isGrid = scrollContainer.classList.toggle('is-grid-mode');
+            if (isGrid) {
+                iconToggleGrid.className = 'bi bi-arrows-expand me-1';
+                textToggleGrid.textContent = 'Ver con desplazamiento';
+                if (btnScrollLeft) btnScrollLeft.style.display = 'none';
+                if (btnScrollRight) btnScrollRight.style.display = 'none';
+                if (progressIndicator) progressIndicator.parentElement.style.display = 'none';
+            } else {
+                iconToggleGrid.className = 'bi bi-grid-3x3-gap-fill me-1';
+                textToggleGrid.textContent = 'Ver en cuadrícula';
+                if (btnScrollLeft) btnScrollLeft.style.display = '';
+                if (btnScrollRight) btnScrollRight.style.display = '';
+                if (progressIndicator) progressIndicator.parentElement.style.display = '';
+                actualizarScrollStatus();
             }
         });
-    }, { threshold: 0.12 });
-    cards.forEach(c => io.observe(c));
+    }
 }
+
+/* ── Filtrado interactivo por pestañas de categorías (Showcase) ── */
+(function() {
+    const filtros = document.querySelectorAll('#catalogo-filtros .filtro-btn');
+    const cards   = document.querySelectorAll('#catalogo-grid .queso-card');
+
+    filtros.forEach(btn => {
+        btn.addEventListener('click', function() {
+            filtros.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            const cat = (this.dataset.cat || '').trim().toLowerCase();
+            cards.forEach(card => {
+                const cardCat = (card.dataset.cat || '').trim().toLowerCase();
+                const show = cat === 'all' || cat === 'todos' || cardCat === cat;
+                card.style.animation = 'none';
+                card.style.display   = show ? '' : 'none';
+                if (show) {
+                    requestAnimationFrame(() => {
+                        card.style.animation = '';
+                        card.classList.add('card-entering');
+                        setTimeout(() => card.classList.remove('card-entering'), 400);
+                    });
+                }
+            });
+        });
+    });
+})();
 
 /* ── Control de cantidad (+ / -) en tarjetas ── */
 function cambiarCantidad(btn, delta, maxStock) {
@@ -838,13 +1044,302 @@ if (pass1 && pass2 && msg) {
     pass2.addEventListener('input', checkPasswords);
 }
 
-/* ── Auto-abrir offcanvas de Carrito si se añade producto (open_cart=1) ── */
-if (window.location.search.includes('open_cart=1')) {
-    const offEl = document.getElementById('offcanvasCarrito');
-    if (offEl && window.bootstrap) {
-        new bootstrap.Offcanvas(offEl).show();
-    }
+/* ── Interceptar 'Agregar al Carrito' para feedback instantáneo y actualización de contador ── */
+document.querySelectorAll('.form-agregar-carrito').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const prodNombre = this.getAttribute('data-nombre') || 'Producto';
+        const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Agregando...';
+        }
+
+        const formData = new FormData(this);
+        formData.append('ajax', '1');
+
+        fetch('index.php?c=carrito&a=agregar', {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnHtml;
+            }
+
+            if (data.success) {
+                // Actualizar contadores del carrito
+                const navCount = document.getElementById('nav-cart-count');
+                if (navCount) navCount.textContent = data.total_items;
+
+                const mobCount = document.getElementById('mob-cart-count');
+                if (mobCount) mobCount.textContent = data.total_items;
+
+                const floatBtn = document.getElementById('floatingCartBtn');
+                const floatCount = document.getElementById('floating-cart-count');
+                if (floatBtn && floatCount) {
+                    floatCount.textContent = data.total_items;
+                    floatBtn.classList.remove('d-none');
+                }
+
+                mostrarToastHome('✓ Producto agregado al carrito (' + prodNombre + ')', true);
+            } else {
+                mostrarToastHome(data.mensaje || 'No se pudo agregar el producto.', false);
+            }
+        })
+        .catch(err => {
+            console.error('Error al agregar al carrito:', err);
+            // Fallback en caso de error
+            form.submit();
+        });
+    });
+});
+
+function agregarDirecto(productoId, prodNombre) {
+    const formData = new FormData();
+    formData.append('ajax', '1');
+    formData.append('producto_id', productoId);
+    formData.append('cantidad', '1');
+
+    fetch('index.php?c=carrito&a=agregar', {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            const navCount = document.getElementById('nav-cart-count');
+            if (navCount) navCount.textContent = data.total_items;
+
+            const mobCount = document.getElementById('mob-cart-count');
+            if (mobCount) mobCount.textContent = data.total_items;
+
+            const floatBtn = document.getElementById('floatingCartBtn');
+            const floatCount = document.getElementById('floating-cart-count');
+            if (floatBtn && floatCount) {
+                floatCount.textContent = data.total_items;
+                floatBtn.classList.remove('d-none');
+            }
+
+            mostrarToastHome('✓ Producto agregado al carrito (' + prodNombre + ')', true);
+        } else {
+            mostrarToastHome(data.mensaje || 'No se pudo agregar el producto.', false);
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        window.location.href = 'index.php?c=carrito';
+    });
 }
+
+function mostrarToastHome(mensaje, esExito = true) {
+    const toastEl = document.getElementById('homeCartToast');
+    const toastMsg = document.getElementById('homeToastMessage');
+    if (!toastEl || !toastMsg) return;
+
+    toastMsg.innerHTML = `<i class="bi ${esExito ? 'bi-check-circle-fill text-success' : 'bi-exclamation-triangle-fill text-warning'} fs-5"></i> <span>${mensaje}</span>`;
+    const toast = new bootstrap.Toast(toastEl, { delay: 3500 });
+    toast.show();
+}
+
+/* ── Botón Cargar más productos (estilo tabla) ── */
+(function() {
+    const loadMoreBtn = document.getElementById('home-load-more-btn');
+    const loadMoreWrapper = document.getElementById('home-load-more-wrapper');
+    const spinner = document.getElementById('home-load-more-spinner');
+    const tbody = document.getElementById('home-products-tbody');
+    
+    if (!loadMoreBtn || !tbody) return;
+    
+    let currentPage = 1;
+    let isLoading = false;
+    let productosCargados = <?= count($quesos) ?>;
+    let totalProductos = <?= $totalProductos ?? 0 ?>;
+    
+    async function cargarMasProductos() {
+        if (isLoading) return;
+        
+        isLoading = true;
+        loadMoreBtn.style.display = 'none';
+        spinner.style.display = 'flex';
+        
+        try {
+            const params = new URLSearchParams({
+                c: 'publico',
+                a: 'cargarMasProductos',
+                pagina: currentPage + 1,
+                por_pagina: 20
+            });
+            
+            const response = await fetch('index.php?' + params.toString());
+            const data = await response.json();
+            
+            if (data.success && data.html) {
+                // Agregar las nuevas filas a la tabla
+                tbody.insertAdjacentHTML('beforeend', data.html);
+                
+                // Actualizar contadores
+                currentPage = data.pagina;
+                productosCargados += data.mostrados;
+                
+                // Actualizar el contador de productos
+                const infoEl = document.querySelector('.home-products-info span strong');
+                if (infoEl) {
+                    infoEl.textContent = productosCargados;
+                }
+                
+                // Ocultar botón si no hay más productos
+                if (!data.hayMas && loadMoreWrapper) {
+                    loadMoreWrapper.innerHTML = `
+                        <div class="home-no-more-products">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span>¡Has visto todos los ${totalProductos} productos!</span>
+                        </div>
+                    `;
+                }
+            }
+        } catch (error) {
+            console.error('Error al cargar más productos:', error);
+            loadMoreBtn.style.display = 'inline-flex';
+        } finally {
+            spinner.style.display = 'none';
+            isLoading = false;
+        }
+    }
+    
+    loadMoreBtn.addEventListener('click', cargarMasProductos);
+    
+    // También cargar más cuando se hace scroll hacia abajo
+    let scrollTimeout;
+    window.addEventListener('scroll', function() {
+        if (scrollTimeout) clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(function() {
+            const scrollPosition = window.innerHeight + window.scrollY;
+            const pageHeight = document.documentElement.scrollHeight;
+            
+            if (pageHeight - scrollPosition < 400 && !isLoading && loadMoreBtn && loadMoreBtn.style.display !== 'none') {
+                cargarMasProductos();
+            }
+        }, 100);
+    });
+})();
+</script>
+
+<!-- =============================================
+     MODAL "VER PRODUCTO" — HOME
+     ============================================= -->
+<div class="pub-modal-overlay" id="homeModalOverlay" onclick="cerrarModalHome()">
+    <div class="pub-modal" id="homeModal" onclick="event.stopPropagation()">
+        <button class="pub-modal-close" onclick="cerrarModalHome()">
+            <i class="bi bi-x-lg"></i>
+        </button>
+        <div class="pub-modal-img-wrap">
+            <img src="" alt="" id="homeModalImg" class="pub-modal-img">
+            <span class="pub-modal-tipo" id="homeModalCategoria"></span>
+        </div>
+        <div class="pub-modal-body">
+            <h2 class="pub-modal-nombre" id="homeModalNombre"></h2>
+            <p class="pub-modal-desc" id="homeModalDesc"></p>
+
+            <div class="pub-modal-caracteristicas">
+                <div class="pub-modal-caract-item">
+                    <i class="bi bi-droplet-fill text-primary"></i>
+                    <span class="pub-modal-caract-label">Tipo de Leche:</span>
+                    <span class="pub-modal-caract-value" id="homeModalTipoLeche"></span>
+                </div>
+                <div class="pub-modal-caract-item">
+                    <i class="bi bi-fire text-danger"></i>
+                    <span class="pub-modal-caract-label">Intensidad:</span>
+                    <span class="pub-modal-caract-value" id="homeModalIntensidad"></span>
+                </div>
+                <div class="pub-modal-caract-item">
+                    <i class="bi bi-clock-history text-warning"></i>
+                    <span class="pub-modal-caract-label">Maduración:</span>
+                    <span class="pub-modal-caract-value" id="homeModalMaduracion"></span>
+                </div>
+                <div class="pub-modal-caract-item">
+                    <i class="bi bi-geo-alt-fill text-success"></i>
+                    <span class="pub-modal-caract-label">Origen:</span>
+                    <span class="pub-modal-caract-value" id="homeModalOrigen"></span>
+                </div>
+            </div>
+
+            <div class="pub-modal-meta">
+                <div>
+                    <div class="pub-modal-meta-label">Presentación</div>
+                    <div class="pub-modal-meta-val" id="homeModalUnidad"></div>
+                </div>
+                <div>
+                    <div class="pub-modal-meta-label">Precio</div>
+                    <div class="pub-modal-precio" id="homeModalPrecio"></div>
+                </div>
+                <div>
+                    <div class="pub-modal-meta-label">Estado</div>
+                    <div id="homeModalEstado"></div>
+                </div>
+            </div>
+            <div id="homeModalAccion" class="pub-modal-accion"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+/* ── Modal Detalle — Home ── */
+function abrirModalHome(p) {
+    document.getElementById('homeModalImg').src        = p.imagen;
+    document.getElementById('homeModalImg').alt        = p.nombre;
+    document.getElementById('homeModalCategoria').textContent = p.categoria || p.tipo;
+    document.getElementById('homeModalNombre').textContent    = p.nombre;
+    document.getElementById('homeModalDesc').textContent      = p.descripcion;
+    document.getElementById('homeModalUnidad').textContent    = p.unidad;
+    document.getElementById('homeModalPrecio').textContent    = p.precio;
+    document.getElementById('homeModalTipoLeche').textContent  = p.tipo_leche  || 'Vaca';
+    document.getElementById('homeModalIntensidad').textContent = p.intensidad  || 'Medio';
+    document.getElementById('homeModalMaduracion').textContent = p.maduracion  || 'N/A';
+    document.getElementById('homeModalOrigen').textContent     = p.origen      || 'Nacional';
+
+    const estadoEl = document.getElementById('homeModalEstado');
+    estadoEl.innerHTML = p.disponible
+        ? '<span class="pub-modal-ok"><i class="bi bi-check-circle-fill me-1"></i>Disponible</span>'
+        : '<span class="pub-modal-off"><i class="bi bi-x-circle-fill me-1"></i>Agotado</span>';
+
+    const accionEl = document.getElementById('homeModalAccion');
+    const esAdmin  = <?= ($esAdmin ?? false) ? 'true' : 'false' ?>;
+
+    if (p.disponible && !esAdmin) {
+        accionEl.innerHTML = `
+            <form method="POST" action="index.php?c=carrito&a=agregar">
+                <input type="hidden" name="producto_id" value="${p.id}">
+                <input type="hidden" name="cantidad"    value="1">
+                <input type="hidden" name="redirect"    value="index.php">
+                <button type="submit" class="pub-modal-btn-agregar">
+                    <i class="bi bi-cart-plus me-2"></i>Agregar al carrito
+                </button>
+            </form>`;
+    } else if (!p.disponible) {
+        accionEl.innerHTML = '<span class="pub-modal-sin-stock">Sin stock disponible</span>';
+    } else {
+        accionEl.innerHTML = '';
+    }
+
+    document.getElementById('homeModalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function cerrarModalHome() {
+    document.getElementById('homeModalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') cerrarModalHome();
+});
 </script>
 </body>
 </html>

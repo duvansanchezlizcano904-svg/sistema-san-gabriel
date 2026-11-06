@@ -201,11 +201,20 @@ if (!empty($filtrosActivos)):
                         <?php endif; ?>
                     </div>
 
-                    <!-- Icono -->
-                    <div class="text-center py-3 rounded-3 mb-3"
-                         style="background:linear-gradient(135deg,#fef3c7 0%,#e0f2fe 100%)">
-                        <div style="font-size:2.75rem">🧀</div>
-                        <span class="badge bg-white text-primary border shadow-sm mt-1">
+                    <!-- Icono o Imagen -->
+                    <div class="text-center py-2 rounded-3 mb-3 overflow-hidden position-relative d-flex align-items-center justify-content-center"
+                         style="background:linear-gradient(135deg,#fef3c7 0%,#e0f2fe 100%); height: 140px;">
+                        <?php 
+                        $imgProd = Producto::imagenUrl($q);
+                        if (!empty($q['imagen']) && file_exists(__DIR__ . '/../../' . $q['imagen'])): 
+                        ?>
+                            <img src="<?= htmlspecialchars($imgProd) ?>" 
+                                 alt="<?= htmlspecialchars($q['nombre']) ?>" 
+                                 style="width: 100%; height: 100%; object-fit: cover;">
+                        <?php else: ?>
+                            <div style="font-size:2.75rem">🧀</div>
+                        <?php endif; ?>
+                        <span class="badge bg-white text-primary border shadow-sm position-absolute bottom-0 mb-1">
                             <?= htmlspecialchars($categoria) ?>
                         </span>
                     </div>

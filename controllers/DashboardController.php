@@ -30,6 +30,12 @@ class DashboardController {
         // Últimas ventas registradas
         $ultimasVentas = $this->modeloVenta->obtenerUltimasVentas(6);
 
+        // Catálogo de productos activos para el showcase del dashboard
+        $catalogoProductos = $this->modeloProducto->listarTodos('', '', 'activo');
+
+        // Estadísticas por categoría para el catálogo
+        $estadisticasCategorias = $this->modeloProducto->obtenerEstadisticasPorCategoria();
+
         // Título de la página
         $tituloPagina = 'Panel Principal - San Gabriel';
         $menuActivo = 'dashboard';

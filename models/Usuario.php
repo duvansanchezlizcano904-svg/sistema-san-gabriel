@@ -122,4 +122,77 @@ class Usuario {
             return false;
         }
     }
+
+    /**
+     * Asegura que existan las columnas para restablecimiento de contraseña
+     */
+    private function asegurarColumnasRecuperacion(): void {
+        static $verificado = false;
+        if ($verificado) return;
+        $verificado = true;
+
+        try {
+            $cols = $this->db->query("SHOW COLUMNS FROM usuarios LIKE 'token_recuperacion'")->fetchAll();
+            if (empty($cols)) {
+                $this->db->exec("ALTER TABLE `usuarios` 
+                    ADD COLUMN `token_recuperacion` VARCHAR(64) NULL DEFAULT NULL AFTER `rol`,
+                    ADD COLUMN `token_expiracion` DATETIME NULL DEFAULT NULL AFTER `token_recuperacion`");
+            }
+        } catch (Throwable $e) {
+            // Silencioso si ya existen las columnas o error controlado
+        }
+    }
+
+    /**
+     * Guarda el token y fecha de expiración para restablecer contraseña
+     */
+    public function guardarTokenRecuperacion(string $email, string $token, string $expiracion): bool {
+        $this->asegurarColumnasRecuperacion();
+        $sql = "UPDATE usuarios 
+                SET token_recuperacion = :token, token_expiracion = :expiracion 
+                WHERE email = :email LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            ':token'      => $token,
+            ':expiracion' => $expiracion,
+            ':email'      => $email,
+        ]);
+    }
+
+    /**
+     * Obtiene un usuario por su token de recuperación activo (no expirado)
+     */
+    public function obtenerPorTokenRecuperacion(string $token): ?array {
+        $this->asegurarColumnasRecuperacion();
+        $sql = "SELECT id, nombre, usuario, email, rol 
+                FROM usuarios 
+                WHERE token_recuperacion = :token 
+                  AND token_expiracion >= NOW() 
+                LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':token' => $token]);
+        $res = $stmt->fetch();
+        return $res ?: null;
+    }
+
+    /**
+     * Actualiza la contraseña por token y limpia el token de recuperación
+     */
+    public function actualizarPasswordPorToken(string $token, string $nuevaPassword): bool {
+        $this->asegurarColumnasRecuperacion();
+        $hash = password_hash($nuevaPassword, PASSWORD_BCRYPT);
+        $sql = "UPDATE usuarios 
+                SET password = :password, 
+                    token_recuperacion = NULL, 
+                    token_expiracion = NULL 
+                WHERE token_recuperacion = :token 
+                  AND token_expiracion >= NOW() 
+                LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ':password' => $hash,
+            ':token'    => $token,
+        ]);
+        return $stmt->rowCount() > 0;
+    }
 }

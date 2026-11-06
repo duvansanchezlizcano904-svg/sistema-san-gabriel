@@ -9,10 +9,16 @@ require_once __DIR__ . '/config/helpers.php';
 // ── Permitir acciones del carrito sin autenticación (lista blanca) ──
 if (!is_authenticated()) {
     $controlador = sanitize($_GET['c'] ?? '');
-    $accion = sanitize($_GET['a'] ?? '');
+    $accion = sanitize($_GET['a'] ?? 'index');
+    if ($accion === '') {
+        $accion = 'index';
+    }
     
     // Lista blanca de acciones permitidas sin sesión
     $accionesCarritoPermitidas = ['agregar', 'actualizar', 'quitar', 'vaciar', 'index'];
+    
+    // Lista blanca de acciones públicas del controlador PublicoController
+    $accionesPublicoPermitidas = ['inicio', 'index', 'cargarMasProductos'];
     
     if ($controlador === 'carrito' && in_array($accion, $accionesCarritoPermitidas, true)) {
         require_once __DIR__ . '/controllers/CarritoController.php';
@@ -24,7 +30,24 @@ if (!is_authenticated()) {
         }
     }
     
-    // Si no es una acción de carrito permitida, mostrar página de inicio
+    // Permitir acciones públicas del controlador PublicoController
+    if ($controlador === 'publico' && in_array($accion, $accionesPublicoPermitidas, true)) {
+        require_once __DIR__ . '/controllers/PublicoController.php';
+        $instancia = new PublicoController();
+        
+        if (method_exists($instancia, $accion)) {
+            $instancia->$accion();
+            exit;
+        }
+    }
+    
+    // Si se solicitó una sección protegida y no tiene sesión, redirigir a login.php (HU-03 Escenario 1)
+    if (!empty($controlador)) {
+        set_flash('warning', 'Debes iniciar sesión para acceder al sistema.');
+        redirect('login.php');
+    }
+
+    // Si no hay parámetro de módulo, mostrar página de bienvenida pública (HU-16)
     require_once __DIR__ . '/controllers/PublicoController.php';
     $ctrl = new PublicoController();
     $ctrl->inicio();
@@ -54,6 +77,7 @@ $controladoresValidos = [
     'catalogo'    => 'CatalogoController',
     'proveedores' => 'ProveedorController',
     'carrito'     => 'CarritoController',
+    'publico'     => 'PublicoController',
 ];
 
 if (!array_key_exists($controlador, $controladoresValidos)) {
